@@ -65,7 +65,7 @@ try {
   await page.getByRole("button", { name: "Keluar", exact: true }).first().click().catch(() => {});
   await page.context().clearCookies();
   await login("tech@x.id");
-  await page.waitForURL(`${B}/my`, { timeout: 8000, waitUntil: "commit" });
+  await page.waitForURL(`${B}/my/scan`, { timeout: 8000, waitUntil: "commit" });
   await page.goto(`${B}/scan/c/c1`);
   await page.getByRole("button", { name: "Pinjam" }).first().click();
   check("scan kategori: teknisi meminjam unit tersedia", await vis(page.getByText(/berhasil dipinjam/i)));
