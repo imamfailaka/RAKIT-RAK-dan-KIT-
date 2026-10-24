@@ -100,3 +100,25 @@ describe("membaca isi QR", () => {
     expect(scanTargetPath("https://rakit.test/admin", "https://rakit.test")).toBeNull();
   });
 });
+
+import BorrowedPage from "@/app/my/borrowed/page";
+describe("halaman sedang dipinjam", () => {
+  it("menampilkan peminjam, kontak, lama hari, dan penanda terlambat", async () => {
+    const rows = [
+      { serial: "W33J24122969", name: "Fusion Splicer SIGNAL FIRE AI8", category: "MESIN FUSION SPLICER", borrower: "Budi", email: "budi@x.id", borrowedAt: "2026-10-10T00:00:00Z", days: 14, overdue: true, mine: false },
+      { serial: "DEVISER-AE2300-01", name: "OTDR DEVISER AE2300", category: "OTDR", borrower: "Rina", email: "rina@x.id", borrowedAt: "2026-10-22T00:00:00Z", days: 2, overdue: false, mine: true },
+    ];
+    vi.spyOn(globalThis, "fetch").mockImplementation(() => Promise.resolve(env(rows)));
+    await act(async () => { render(<BorrowedPage />); });
+    expect(await screen.findByText("Budi")).toBeInTheDocument();
+    expect(screen.getByText("budi@x.id")).toBeInTheDocument();
+    expect(screen.getByText(/14 hari/)).toBeInTheDocument();
+    expect(screen.getByText("Terlambat")).toBeInTheDocument();
+    expect(screen.getByText(/Rina.*Anda|Anda/)).toBeInTheDocument();
+  });
+  it("menyatakan bila tidak ada yang dipinjam", async () => {
+    vi.spyOn(globalThis, "fetch").mockImplementation(() => Promise.resolve(env([])));
+    await act(async () => { render(<BorrowedPage />); });
+    expect(await screen.findByText(/tidak ada alat yang sedang dipinjam/i)).toBeInTheDocument();
+  });
+});

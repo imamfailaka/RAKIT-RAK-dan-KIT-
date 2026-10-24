@@ -28,3 +28,19 @@ export async function scanBorrow(serial: string): Promise<Loan> {
 export async function scanReturn(serial: string, input: { returnCondition: Condition; note?: string }): Promise<Loan> {
   return (await apiFetch<Loan>(`${unit(serial)}/return`, { method: "POST", token: getToken(), body: JSON.stringify(input) })).data;
 }
+
+export type BorrowedItem = {
+  serial: string;
+  name: string;
+  category?: string;
+  borrower?: string;
+  email?: string;
+  borrowedAt: string;
+  days: number;
+  overdue: boolean;
+  mine: boolean;
+};
+/** Semua unit yang sedang dipinjam beserta peminjamnya, agar teknisi bisa saling menghubungi. */
+export async function listBorrowed(): Promise<BorrowedItem[]> {
+  return (await apiFetch<BorrowedItem[]>("/scan/borrowed", { token: getToken() })).data;
+}

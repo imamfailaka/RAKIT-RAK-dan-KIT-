@@ -18,8 +18,8 @@ Platform inventory untuk monitoring peralatan teknisi pada PT. Supra Primatama N
 - Peran: **Admin gudang** (kelola semua) dan **Teknisi** (lihat miliknya, daftar alat, pindai QR untuk pinjam/kembali). Akun dibuat admin; tidak ada daftar mandiri atau email. Tidak ada stok bahan/aksesori: Rakit hanya untuk peminjaman alat.
 
 ## Perintah
-- Backend: `npm run dev`, `npm test` (86 tes), `npm run typecheck`, `npm run seed:admin | seed:catalog | seed:equipment`, `npm run smoke`.
-- Frontend: `npm run dev` (port 3001), `npm test` (162 tes), `npm run lint`, `npm run typecheck`, `npm run build`, `npm run e2e`.
+- Backend: `npm run dev`, `npm test` (88 tes), `npm run typecheck`, `npm run seed:admin | seed:catalog | seed:equipment`, `npm run smoke`.
+- Frontend: `npm run dev` (port 3001), `npm test` (165 tes), `npm run lint`, `npm run typecheck`, `npm run build`, `npm run e2e`.
 - Kerjakan dengan TDD (vitest + Testing Library). Jalankan tes, typecheck, lint, dan build sebelum menyatakan selesai.
 
 ## Aturan domain
@@ -45,6 +45,6 @@ Platform inventory untuk monitoring peralatan teknisi pada PT. Supra Primatama N
 - Selesai: backend, frontend, katalog dan data contoh di Atlas, UI baru (sidebar bergrup, pencarian dan filter, dashboard interaktif), deploy, laporan online ("Laporan dan Panduan Penggunaan Web Inventori Teknisi"), jawaban pertanyaan tahap 2-8 (file Word).
 - 24 Okt 2026: stok dihapus total (kode, DB, UI), kategori jadi 3, QR per kategori + halaman scan + lembar cetak (`/admin/categories/qr`), data Atlas diganti 14 alat Biznet Duri Pulo.
 - 24 Okt 2026: menu teknisi "Pindai alat" kini punya kamera di aplikasi (`QrScanner`, jsqr) yang membuka halaman pinjam; menu admin "Kode QR" ke lembar cetak.
-- Teknisi: setelah login masuk ke `/my/scan`; di HP bilah bawah berisi "Pindai alat" (kamera lalu pilih unit) dan "Pinjaman saya"; menu "Alat" hanya `desktopOnly`.
+- Teknisi: setelah login masuk ke `/my/scan`; di HP bilah bawah berisi "Pindai alat" (kamera lalu pilih unit), "Pinjaman saya", dan "Sedang dipinjam" (semua unit yang keluar + peminjam + email + lama hari, API `GET /scan/borrowed`); menu "Alat" hanya `desktopOnly`.
 - Rebranding "Rakit" (logo, login dua kolom) selesai di kode dan lolos tes/typecheck/lint/build lokal; belum di-deploy sampai tampilan disetujui. Wilayah fungsi Vercel dipindah ke `sin1` (dekat Atlas Jakarta) agar login dan muat halaman cepat.
 - Belum: deploy Rakit, pembaruan laporan online, UAT dengan mitra, serah terima akun hosting/DB ke mitra, berita acara, publikasi GitHub, artikel media dan jurnal.

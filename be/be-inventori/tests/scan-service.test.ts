@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { scanCategory, scanInfo, scanBorrow, scanReturn, type ScanStore, type ScanEquipment, type OpenLoan } from "../src/services/scan-service";
+import { borrowedNow, scanCategory, scanInfo, scanBorrow, scanReturn, type ScanStore, type ScanEquipment, type OpenLoan } from "../src/services/scan-service";
 import type { EquipmentStore, LoanStore, LoanRecord, Condition } from "../src/services/loan-service";
 
 class Store implements ScanStore {
@@ -8,6 +8,9 @@ class Store implements ScanStore {
   async findCategory(id: string) { return id === "C1" ? { id: "C1", name: "OTDR" } : null; }
   async listByCategory(categoryId: string) {
     return [...this.eq.values()].filter((e) => e.category === categoryId || categoryId === "C1").map((e) => ({ equipment: e, loan: e.loan ?? null }));
+  }
+  async listOpenLoans() {
+    return [...this.eq.values()].filter((e) => e.loan).map((e) => ({ equipment: e, loan: e.loan! }));
   }
   async findOpenLoan(equipmentId: string) {
     for (const e of this.eq.values()) if (e.id === equipmentId) return e.loan ?? null;
@@ -132,5 +135,24 @@ describe("scanCategory", () => {
   it("admin only views", async () => {
     const r: any = await scanCategory(deps(), "C1", admin);
     expect(r.items.every((i: any) => i.action === "view")).toBe(true);
+  });
+});
+
+
+describe("daftar yang sedang dipinjam", () => {
+  const day = 86_400_000;
+  beforeEach(() => {
+    store.eq.set("A-1", { id: "E1", serial: "A-1", name: "OTDR", status: "borrowed", condition: "good", category: "OTDR", loan: { id: "L1", technicianId: "T1", technicianName: "Budi", technicianEmail: "budi@x.id", borrowedAt: new Date(Date.now() - 9 * day) } });
+    store.eq.set("A-2", { id: "E2", serial: "A-2", name: "Splicer", status: "borrowed", condition: "good", category: "Fusion", loan: { id: "L2", technicianId: "T2", technicianName: "Rina", technicianEmail: "rina@x.id", borrowedAt: new Date(Date.now() - 2 * day) } });
+    store.eq.set("A-3", { id: "E3", serial: "A-3", name: "OFI", status: "available", condition: "good", category: "Lain" });
+  });
+  it("menampilkan peminjam, kontak, lama hari, dan hanya unit yang dipinjam", async () => {
+    const r = await borrowedNow(deps(), tech, new Date(), 7);
+    expect(r.map((x) => x.serial)).toEqual(["A-1", "A-2"]);
+    expect(r[0]).toMatchObject({ borrower: "Budi", email: "budi@x.id", days: 9, overdue: true, mine: true });
+    expect(r[1]).toMatchObject({ borrower: "Rina", days: 2, overdue: false, mine: false });
+  });
+  it("juga bisa dilihat admin", async () => {
+    expect((await borrowedNow(deps(), admin, new Date(), 7)).every((x) => x.mine === false)).toBe(true);
   });
 });

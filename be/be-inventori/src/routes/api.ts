@@ -38,6 +38,7 @@ router.post("/loans/:id/return", ...admin, loanController.return);
 
 // Scan QR alat: GET hanya membaca; pinjam/kembali hanya untuk teknisi dan atas nama dirinya sendiri.
 const technician = [authMiddleware, requireRole("technician")];
+router.get("/scan/borrowed", ...anyUser, scanController.borrowed);
 router.get("/scan/category/:id", ...anyUser, scanController.category);
 router.get("/scan/:serial", ...anyUser, scanController.info);
 router.post("/scan/:serial/borrow", ...technician, scanController.borrow);

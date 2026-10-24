@@ -14,6 +14,18 @@ const toScan = (e: any): ScanEquipment => ({
 });
 
 export const mongoScanStore: ScanStore = {
+  async listOpenLoans() {
+    const loans: any[] = await LoanModel.find({ returnedAt: null })
+      .populate("technician", "name email")
+      .populate({ path: "equipment", populate: { path: "category", select: "name" } })
+      .lean();
+    return loans
+      .filter((l) => l.equipment)
+      .map((l) => ({
+        equipment: toScan(l.equipment),
+        loan: { id: String(l._id), technicianId: String(l.technician?._id ?? l.technician), technicianName: l.technician?.name, technicianEmail: l.technician?.email, borrowedAt: l.borrowedAt },
+      }));
+  },
   async findCategory(id) {
     if (!mongoose.isValidObjectId(id)) return null;
     const c: any = await CategoryModel.findById(id).lean();
