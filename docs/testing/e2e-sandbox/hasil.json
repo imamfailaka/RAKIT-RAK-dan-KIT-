@@ -1,0 +1,158 @@
+[
+  {
+    "no": 1,
+    "name": "Login dengan password salah menampilkan error, tetap di halaman login",
+    "ok": true,
+    "detail": "http://localhost:3001/auth/login"
+  },
+  {
+    "no": 2,
+    "name": "Login admin berhasil dan masuk dashboard admin",
+    "ok": true,
+    "detail": "http://localhost:3001/admin"
+  },
+  {
+    "no": 3,
+    "name": "Admin menambah kategori 'Alat ukur fiber optik'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "no": 4,
+    "name": "Kategori dengan nama sama beda huruf besar/kecil ditolak",
+    "ok": true,
+    "detail": "modal tetap terbuka"
+  },
+  {
+    "no": 5,
+    "name": "Admin menambah alat OTDR (serial OTDR-001)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "no": 6,
+    "name": "Serial alat yang sama ditolak",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "no": 7,
+    "name": "Admin membuat akun teknisi Budi",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "no": 8,
+    "name": "Email teknisi yang sama ditolak",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "no": 9,
+    "name": "Admin meminjamkan OTDR ke Budi",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "no": 10,
+    "name": "OTDR yang sedang dipinjam tidak bisa dipinjam lagi (tidak ada di daftar alat tersedia)",
+    "ok": true,
+    "detail": "pilihan: "
+  },
+  {
+    "no": 11,
+    "name": "Admin mengembalikan OTDR dengan kondisi baik",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "no": 12,
+    "name": "Setelah kembali, OTDR berstatus Tersedia lagi",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "no": 13,
+    "name": "Admin menambah item stok Konektor SC dengan stok awal 20",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "no": 14,
+    "name": "Stok awal 20 ikut tercatat di Riwayat stok sebagai Masuk",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "no": 15,
+    "name": "Stok masuk 5 untuk Konektor SC",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "no": 16,
+    "name": "Stok keluar 10 untuk Budi mengurangi sisa menjadi 15",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "no": 17,
+    "name": "Stok keluar 5000 (melebihi sisa) ditolak oleh form, stok tetap 15",
+    "ok": true,
+    "detail": "pesan 'Jumlah melebihi sisa stok (15)', tombol nonaktif, stok tetap 15"
+  },
+  {
+    "no": 18,
+    "name": "Jumlah 0 dan -3 pada stok keluar ditolak",
+    "ok": true,
+    "detail": "tombol Keluarkan nonaktif untuk 0 dan -3"
+  },
+  {
+    "no": 19,
+    "name": "Dashboard admin menampilkan data sesuai",
+    "ok": true,
+    "detail": "Inventori Teknisi Dashboard Keluar Dashboard Alat Stok Peminjaman Riwayat stok Kategori Pengguna Dashboard Alat tersedia 1 Alat dipinjam 0 Alat rusak atau perba"
+  },
+  {
+    "no": 20,
+    "name": "Keluar dari akun admin",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "no": 21,
+    "name": "Login teknisi Budi dan masuk ke halaman teknisi",
+    "ok": true,
+    "detail": "http://localhost:3001/my"
+  },
+  {
+    "no": 22,
+    "name": "Teknisi hanya punya menu Pinjaman saya, Alat, Stok",
+    "ok": true,
+    "detail": "Inventori Teknisi Pinjaman saya Keluar Pinjaman saya Alat Stok"
+  },
+  {
+    "no": 23,
+    "name": "Teknisi melihat pinjaman dan pengambilan stok miliknya",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "no": 24,
+    "name": "Halaman Alat teknisi hanya-baca (tanpa Tambah/Ubah/Hapus)",
+    "ok": true,
+    "detail": "tombol aksi=0"
+  },
+  {
+    "no": 25,
+    "name": "Halaman Stok teknisi hanya-baca (tanpa Tambah/Ubah/Hapus)",
+    "ok": true,
+    "detail": "tombol aksi=0"
+  },
+  {
+    "no": 26,
+    "name": "Teknisi yang membuka /admin diarahkan keluar dari area admin",
+    "ok": true,
+    "detail": "http://localhost:3001/my"
+  }
+]
