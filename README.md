@@ -15,7 +15,6 @@ Nama aplikasi di antarmuka adalah **Rakit** (RAK + KIT), diatur di `fe-inventori
 - `be/be-inventori` — API Express + TypeScript + MongoDB (project Vercel `inventori-api`, Root Directory `be/be-inventori`).
 - `fe/fe-inventori` — antarmuka Next.js (project Vercel `inventori-web`, Root Directory `fe/fe-inventori`).
 - `docs/` — spesifikasi, rencana, log pengujian, panduan serah terima, asal kode.
-- `CLAUDE.md` — aturan kerja dan konteks proyek untuk asisten AI. Proyek ini dibuat dengan bantuan AI (lihat `docs/provenance.md`).
 
 ## Menjalankan
 Salin `be/be-inventori/.env.example` menjadi `.env` lalu isi sendiri nilainya (jangan di-commit). Backend: `npm install && npm run dev`. Frontend: `npm install && npm run dev` (port 3001). Data awal: `npm run seed:admin`, `seed:catalog`, `seed:equipment`.
