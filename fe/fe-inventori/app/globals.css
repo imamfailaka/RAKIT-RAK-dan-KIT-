@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+/* Tema Malam (gelap) untuk seluruh aplikasi. Semua komponen memakai token semantik di bawah,
+   jangan menulis warna zinc/indigo langsung di komponen. */
+:root {
+  color-scheme: dark;
+}
+
+@theme inline {
+  --font-sans: "Sora Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, monospace;
+
+  --color-canvas: #0c1411;
+  --color-rail: #0f1914;
+  --color-surface: #131e19;
+  --color-surface-alt: #1a2a22;
+  --color-line: #25362e;
+  --color-line-strong: #3b5247;
+  --color-ink: #e7f0eb;
+  --color-muted: #9db3a8;
+  --color-accent: #34d399;
+  --color-accent-hover: #5ee0b0;
+  --color-accent-ink: #06281c;
+
+  --color-danger-bg: #3f1d1d;
+  --color-danger-ink: #fca5a5;
+  --color-danger-solid: #dc2626;
+  --color-warn-bg: #3a2e10;
+  --color-warn-ink: #fbbf24;
+  --color-info-bg: #12303a;
+  --color-info-ink: #7dd3fc;
+  --color-ok-bg: #123325;
+  --color-ok-ink: #6ee7b7;
+
+  --radius-ui: 14px;
+
+  --animate-rise: rise 500ms ease-out both;
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-canvas);
+  color: var(--color-ink);
+}
+
+input,
+select,
+textarea {
+  color: var(--color-ink);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--color-muted);
+}
