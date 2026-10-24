@@ -39,7 +39,7 @@ describe("proxy", () => {
   it("sends / to the right home for each visitor", () => {
     expect(location(proxy(req("/"))).pathname).toBe("/auth/login");
     expect(location(proxy(req("/", admin()))).pathname).toBe("/admin");
-    expect(location(proxy(req("/", tech()))).pathname).toBe("/my");
+    expect(location(proxy(req("/", tech()))).pathname).toBe("/my/scan");
   });
   it("lets the login page through", () => {
     expect(proxy(req("/auth/login")).headers.get("location")).toBeNull();

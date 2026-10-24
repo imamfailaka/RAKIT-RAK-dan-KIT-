@@ -45,5 +45,6 @@ Platform inventory untuk monitoring peralatan teknisi pada PT. Supra Primatama N
 - Selesai: backend, frontend, katalog dan data contoh di Atlas, UI baru (sidebar bergrup, pencarian dan filter, dashboard interaktif), deploy, laporan online ("Laporan dan Panduan Penggunaan Web Inventori Teknisi"), jawaban pertanyaan tahap 2-8 (file Word).
 - 24 Okt 2026: stok dihapus total (kode, DB, UI), kategori jadi 3, QR per kategori + halaman scan + lembar cetak (`/admin/categories/qr`), data Atlas diganti 14 alat Biznet Duri Pulo.
 - 24 Okt 2026: menu teknisi "Pindai alat" kini punya kamera di aplikasi (`QrScanner`, jsqr) yang membuka halaman pinjam; menu admin "Kode QR" ke lembar cetak.
+- Teknisi: setelah login masuk ke `/my/scan`; di HP bilah bawah hanya "Pindai alat" (kamera lalu pilih unit), menu lain `desktopOnly`.
 - Rebranding "Rakit" (logo, login dua kolom) selesai di kode dan lolos tes/typecheck/lint/build lokal; belum di-deploy sampai tampilan disetujui. Wilayah fungsi Vercel dipindah ke `sin1` (dekat Atlas Jakarta) agar login dan muat halaman cepat.
 - Belum: deploy Rakit, pembaruan laporan online, UAT dengan mitra, serah terima akun hosting/DB ke mitra, berita acara, publikasi GitHub, artikel media dan jurnal.
