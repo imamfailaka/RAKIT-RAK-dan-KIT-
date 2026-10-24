@@ -1,10 +1,11 @@
 import { Response } from "express";
 import { IReqUser } from "../middlewares/auth";
-import { scanCategory, scanBorrow, scanInfo, scanReturn, type ScanDeps } from "../services/scan-service";
+import { borrowedNow, scanCategory, scanBorrow, scanInfo, scanReturn, type ScanDeps } from "../services/scan-service";
 import { mongoEquipmentStore, mongoTechnicianLookup } from "../services/equipment-store";
 import { mongoLoanStore } from "../services/loan-store";
 import { mongoScanStore } from "../services/scan-store";
 import response from "../utils/response";
+import { env } from "../utils/env";
 
 const deps: ScanDeps = {
   equipment: mongoEquipmentStore,
@@ -23,6 +24,13 @@ function fail(res: Response, r: { code: 400 | 403 | 404 | 409; message: string }
 }
 
 export default {
+  async borrowed(req: IReqUser, res: Response) {
+    try {
+      response.success(res, await borrowedNow(deps, caller(req), new Date(), env.OVERDUE_DAYS), "success list borrowed");
+    } catch (error) {
+      response.error(res, error, "failed to list borrowed");
+    }
+  },
   async category(req: IReqUser, res: Response) {
     try {
       const r = await scanCategory(deps, req.params.id, caller(req));

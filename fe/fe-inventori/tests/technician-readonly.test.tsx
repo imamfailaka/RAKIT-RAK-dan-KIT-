@@ -23,6 +23,7 @@ describe("TechNav", () => {
     render(<TechNav />);
     expect(screen.getByRole("link", { name: "Pinjaman saya" })).toHaveAttribute("href", "/my");
     expect(screen.getByRole("link", { name: "Alat" })).toHaveAttribute("href", "/my/equipment");
+    expect(screen.getByRole("link", { name: "Sedang dipinjam" })).toHaveAttribute("href", "/my/borrowed");
     expect(screen.getByRole("link", { name: "Pindai alat" })).toHaveAttribute("href", "/my/scan");
     expect(screen.queryByRole("link", { name: /pengguna|kategori/i })).toBeNull();
   });

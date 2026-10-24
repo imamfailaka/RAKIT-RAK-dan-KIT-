@@ -8,11 +8,13 @@ export type ScanEquipment = {
   condition: Condition;
   category?: string;
 };
-export type OpenLoan = { id: string; technicianId: string; technicianName?: string; borrowedAt: Date };
+export type OpenLoan = { id: string; technicianId: string; technicianName?: string; technicianEmail?: string; borrowedAt: Date };
 
 export interface ScanStore {
   findBySerial(serial: string): Promise<ScanEquipment | null>;
   findOpenLoan(equipmentId: string): Promise<OpenLoan | null>;
+  /** Every unit that is out right now, with its open loan. */
+  listOpenLoans(): Promise<{ equipment: ScanEquipment; loan: OpenLoan }[]>;
   findCategory(id: string): Promise<{ id: string; name: string } | null>;
   /** All units in a category with their open loan (if any), ordered by name then serial. */
   listByCategory(categoryId: string): Promise<{ equipment: ScanEquipment; loan: OpenLoan | null }[]>;
@@ -100,4 +102,27 @@ export async function scanCategory(deps: ScanDeps, categoryId: string, caller: C
     return { id: e.id, serial: e.serial, name: e.name, status: e.status, condition: e.condition, borrower: loan?.technicianName, borrowedAt: loan?.borrowedAt, mine, action };
   });
   return { ok: true, category, items };
+}
+
+export type BorrowedItem = {
+  serial: string;
+  name: string;
+  category?: string;
+  borrower?: string;
+  email?: string;
+  borrowedAt: Date;
+  days: number;
+  overdue: boolean;
+  mine: boolean;
+};
+
+/** Who holds what right now, longest first, so colleagues can chase a unit that was never returned. */
+export async function borrowedNow(deps: ScanDeps, caller: Caller, now: Date, overdueDays: number): Promise<BorrowedItem[]> {
+  const rows = await deps.scan.listOpenLoans();
+  return rows
+    .map(({ equipment: e, loan }) => {
+      const days = Math.max(0, Math.floor((now.getTime() - new Date(loan.borrowedAt).getTime()) / 86_400_000));
+      return { serial: e.serial, name: e.name, category: e.category, borrower: loan.technicianName, email: loan.technicianEmail, borrowedAt: loan.borrowedAt, days, overdue: days > overdueDays, mine: loan.technicianId === caller.id };
+    })
+    .sort((a, b) => new Date(a.borrowedAt).getTime() - new Date(b.borrowedAt).getTime());
 }
