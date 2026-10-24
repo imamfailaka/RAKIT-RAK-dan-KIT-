@@ -18,7 +18,7 @@ Platform inventory untuk monitoring peralatan teknisi pada PT. Supra Primatama N
 - Peran: **Admin gudang** (kelola semua) dan **Teknisi** (lihat miliknya, daftar alat, pindai QR untuk pinjam/kembali). Akun dibuat admin; tidak ada daftar mandiri atau email. Tidak ada stok bahan/aksesori: Rakit hanya untuk peminjaman alat.
 
 ## Perintah
-- Backend: `npm run dev`, `npm test` (88 tes), `npm run typecheck`, `npm run seed:admin | seed:catalog | seed:equipment`, `npm run smoke`.
+- Backend: `npm run dev`, `npm test` (102 tes), `npm run typecheck`, `npm run seed:admin | seed:catalog | seed:equipment`, `npm run smoke`.
 - Frontend: `npm run dev` (port 3001), `npm test` (165 tes), `npm run lint`, `npm run typecheck`, `npm run build`, `npm run e2e`.
 - Kerjakan dengan TDD (vitest + Testing Library). Jalankan tes, typecheck, lint, dan build sebelum menyatakan selesai.
 
@@ -38,7 +38,7 @@ Platform inventory untuk monitoring peralatan teknisi pada PT. Supra Primatama N
 ## Deploy (Vercel, tim `imam-cca4`)
 - Web: https://inventori-web-gilt.vercel.app (project `inventori-web`, Root Directory `fe/fe-inventori`). API: https://inventori-api-six.vercel.app (project `inventori-api`, Root Directory `be/be-inventori`, docs `/api/docs`). Keduanya terhubung ke repo GitHub ini: push ke `main` = deploy production otomatis, branch/PR = preview.
 - Deploy normal lewat `git push` (Git integration Vercel). Cadangan manual lewat MCP Vercel `create_deployment`. Verifikasi dengan `get_deployment` lalu `web_fetch_vercel_url` (curl sandbox ke vercel.app diblokir).
-- Env backend: `DATABASE_URL`, `SECRET`, `CLIENT_HOST`, `OVERDUE_DAYS`. Env frontend: `NEXT_PUBLIC_API_URL` (tertanam saat build; ubah env = redeploy).
+- Env backend: `DATABASE_URL`, `SECRET`, `CLIENT_HOST`, `OVERDUE_DAYS`, opsional `TELEGRAM_*`. Env frontend: `NEXT_PUBLIC_API_URL` (tertanam saat build; ubah env = redeploy).
 - Keamanan database dan serah terima kredensial: lihat `docs/handover/README.md`. Jangan pernah commit `.env`.
 
 ## Status (24 Okt 2026)
@@ -47,4 +47,5 @@ Platform inventory untuk monitoring peralatan teknisi pada PT. Supra Primatama N
 - 24 Okt 2026: menu teknisi "Pindai alat" kini punya kamera di aplikasi (`QrScanner`, jsqr) yang membuka halaman pinjam; menu admin "Kode QR" ke lembar cetak.
 - Teknisi: setelah login masuk ke `/my/scan`; di HP bilah bawah berisi "Pindai alat" (kamera lalu pilih unit), "Pinjaman saya", dan "Sedang dipinjam" (semua unit yang keluar + peminjam + email + lama hari, API `GET /scan/borrowed`); menu "Alat" hanya `desktopOnly`.
 - Rebranding "Rakit" (logo, login dua kolom) selesai di kode dan lolos tes/typecheck/lint/build lokal; belum di-deploy sampai tampilan disetujui. Wilayah fungsi Vercel dipindah ke `sin1` (dekat Atlas Jakarta) agar login dan muat halaman cepat.
+- Bot Telegram (`services/telegram*.ts`, `controllers/telegram.controller.ts`): notifikasi pinjam/kembali ke satu grup + perintah `/dipinjam` `/riwayat`; webhook `POST /api/telegram/webhook` (header rahasia), pendaftaran `GET /api/telegram/setup?key=`. Env `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`, `TELEGRAM_WEBHOOK_SECRET` diisi pemilik di Vercel; kosong = nonaktif. Panduan di `docs/handover/README.md`.
 - Belum: deploy Rakit, pembaruan laporan online, UAT dengan mitra, serah terima akun hosting/DB ke mitra, berita acara, publikasi GitHub, artikel media dan jurnal.

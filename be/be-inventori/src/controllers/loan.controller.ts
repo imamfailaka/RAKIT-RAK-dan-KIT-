@@ -5,6 +5,7 @@ import { IReqUser } from "../middlewares/auth";
 import { borrow, returnLoan } from "../services/loan-service";
 import { mongoEquipmentStore, mongoTechnicianLookup } from "../services/equipment-store";
 import { mongoLoanStore } from "../services/loan-store";
+import { notifyLoan } from "../services/telegram-notify";
 import { pageParams } from "../utils/paginate";
 import response from "../utils/response";
 
@@ -48,6 +49,7 @@ export default {
       if (Object.keys(errors).length) return response.badRequest(res, "failed to create loan", errors);
       const r = await borrow(deps, { equipmentId: equipment, technicianId: technician, recordedBy: req.user!.id, note: text(note) });
       if (!r.ok) return respond(res, r);
+      await notifyLoan(r.loan.id, "borrow", "dicatat admin");
       response.created(res, r.loan, "success create loan");
     } catch (error) {
       response.error(res, error, "failed to create loan");
@@ -58,6 +60,7 @@ export default {
       if (!isId(req.params.id)) return response.notFound(res, "loan not found");
       const r = await returnLoan(deps, req.params.id, req.body?.returnCondition, text(req.body?.note));
       if (!r.ok) return respond(res, r);
+      await notifyLoan(r.loan.id, "return", "dicatat admin");
       response.success(res, r.loan, "success return loan");
     } catch (error) {
       response.error(res, error, "failed to return loan");

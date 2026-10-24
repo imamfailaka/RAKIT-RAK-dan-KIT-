@@ -3,6 +3,7 @@ import authController from "../controllers/auth.controller";
 import categoryController from "../controllers/category.controller";
 import equipmentController from "../controllers/equipment.controller";
 import loanController from "../controllers/loan.controller";
+import telegramController from "../controllers/telegram.controller";
 import scanController from "../controllers/scan.controller";
 import dashboardController from "../controllers/dashboard.controller";
 import userController from "../controllers/user.controller";
@@ -43,6 +44,10 @@ router.get("/scan/category/:id", ...anyUser, scanController.category);
 router.get("/scan/:serial", ...anyUser, scanController.info);
 router.post("/scan/:serial/borrow", ...technician, scanController.borrow);
 router.post("/scan/:serial/return", ...technician, scanController.return);
+
+// Bot Telegram: tanpa JWT, dijaga header rahasia Telegram.
+router.post("/telegram/webhook", telegramController.webhook);
+router.get("/telegram/setup", telegramController.setup);
 
 router.get("/dashboard", ...anyUser, dashboardController.get);
 

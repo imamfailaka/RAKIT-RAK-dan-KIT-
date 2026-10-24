@@ -4,6 +4,7 @@ import { borrowedNow, scanCategory, scanBorrow, scanInfo, scanReturn, type ScanD
 import { mongoEquipmentStore, mongoTechnicianLookup } from "../services/equipment-store";
 import { mongoLoanStore } from "../services/loan-store";
 import { mongoScanStore } from "../services/scan-store";
+import { notifyLoan } from "../services/telegram-notify";
 import response from "../utils/response";
 import { env } from "../utils/env";
 
@@ -54,6 +55,7 @@ export default {
     try {
       const r = await scanBorrow(deps, req.params.serial, caller(req));
       if (!r.ok) return fail(res, r);
+      await notifyLoan(r.loan.id, "borrow", "Scan QR");
       response.created(res, r.loan, "success borrow by scan");
     } catch (error) {
       response.error(res, error, "failed to borrow by scan");
@@ -63,6 +65,7 @@ export default {
     try {
       const r = await scanReturn(deps, req.params.serial, caller(req), req.body?.returnCondition, text(req.body?.note));
       if (!r.ok) return fail(res, r);
+      await notifyLoan(r.loan.id, "return", "Scan QR");
       response.success(res, r.loan, "success return by scan");
     } catch (error) {
       response.error(res, error, "failed to return by scan");
