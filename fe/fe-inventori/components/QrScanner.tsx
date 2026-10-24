@@ -10,7 +10,7 @@ export default function QrScanner() {
   const router = useRouter();
   const video = useRef<HTMLVideoElement>(null);
   const [error, setError] = useState<string | null>(() =>
-    typeof navigator !== "undefined" && !navigator.mediaDevices ? "Peramban ini tidak mendukung kamera. Pilih kategori di bawah." : null,
+    typeof navigator !== "undefined" && !navigator.mediaDevices ? "Peramban ini tidak mendukung kamera." : null,
   );
   const [wrong, setWrong] = useState(false);
 
@@ -47,7 +47,7 @@ export default function QrScanner() {
         if (video.current) { video.current.srcObject = s; void video.current.play(); }
         raf = requestAnimationFrame(tick);
       })
-      .catch(() => setError("Kamera tidak bisa dibuka. Izinkan akses kamera di peramban, atau pilih kategori di bawah."));
+      .catch(() => setError("Kamera tidak bisa dibuka. Izinkan akses kamera di peramban."));
     return () => { stopped = true; cancelAnimationFrame(raf); stream?.getTracks().forEach((t) => t.stop()); };
   }, [router]);
 
