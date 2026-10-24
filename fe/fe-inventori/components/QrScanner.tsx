@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import jsQR from "jsqr";
 import { scanTargetPath } from "@/lib/scan";
@@ -9,9 +9,10 @@ import { scanTargetPath } from "@/lib/scan";
 export default function QrScanner() {
   const router = useRouter();
   const video = useRef<HTMLVideoElement>(null);
-  const [error, setError] = useState<string | null>(() =>
-    typeof navigator !== "undefined" && !navigator.mediaDevices ? "Peramban ini tidak mendukung kamera." : null,
-  );
+  // Di server dianggap ada kamera; klien memeriksa sebenarnya tanpa memicu galat hidrasi.
+  const supported = useSyncExternalStore(() => () => {}, () => !!navigator.mediaDevices, () => true);
+  const [denied, setDenied] = useState(false);
+  const error = !supported ? "Peramban ini tidak mendukung kamera." : denied ? "Kamera tidak bisa dibuka. Izinkan akses kamera di peramban." : null;
   const [wrong, setWrong] = useState(false);
 
   useEffect(() => {
@@ -47,7 +48,7 @@ export default function QrScanner() {
         if (video.current) { video.current.srcObject = s; void video.current.play(); }
         raf = requestAnimationFrame(tick);
       })
-      .catch(() => setError("Kamera tidak bisa dibuka. Izinkan akses kamera di peramban."));
+      .catch(() => setDenied(true));
     return () => { stopped = true; cancelAnimationFrame(raf); stream?.getTracks().forEach((t) => t.stop()); };
   }, [router]);
 
