@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import QrScanner from "@/components/QrScanner";
 import ErrorState from "@/components/ErrorState";
 import SessionExpired from "@/components/SessionExpired";
 import Skeleton from "@/components/Skeleton";
@@ -14,7 +15,8 @@ export default function MyScanPage() {
   return (
     <div className="flex max-w-md flex-col gap-4">
       <h1 className="text-2xl font-semibold">Pindai alat</h1>
-      <p className="text-sm text-muted">Cara cepat: buka kamera ponsel, arahkan ke QR kategori, lalu ketuk tautan yang muncul. Tanpa kamera, pilih kategori di bawah.</p>
+      <QrScanner />
+      <p className="text-sm text-muted">Tanpa kamera, pilih kategori di bawah.</p>
       {state.status === "loading" && <Skeleton count={3} />}
       {state.status === "error" && (state.error.kind === "session" ? <SessionExpired /> : <ErrorState message={state.error.message} onRetry={retry} />)}
       {state.status === "ready" && (
