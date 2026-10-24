@@ -19,7 +19,7 @@ Platform inventory untuk monitoring peralatan teknisi pada PT. Supra Primatama N
 
 ## Perintah
 - Backend: `npm run dev`, `npm test` (102 tes), `npm run typecheck`, `npm run seed:admin | seed:catalog | seed:equipment`, `npm run smoke`.
-- Frontend: `npm run dev` (port 3001), `npm test` (165 tes), `npm run lint`, `npm run typecheck`, `npm run build`, `npm run e2e`.
+- Frontend: `npm run dev` (port 3001), `npm test` (164 tes), `npm run lint`, `npm run typecheck`, `npm run build`, `npm run e2e`.
 - Kerjakan dengan TDD (vitest + Testing Library). Jalankan tes, typecheck, lint, dan build sebelum menyatakan selesai.
 
 ## Aturan domain
