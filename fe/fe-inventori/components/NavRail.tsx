@@ -13,13 +13,15 @@ export type NavItem = { href: string; label: string; icon: Icon; /** Judul kelom
  */
 export default function NavRail({ items, label, root }: { items: NavItem[]; label: string; root: string }) {
   const path = usePathname();
+  // Menu aktif = yang cocok paling spesifik (mis. /admin/categories/qr, bukan /admin/categories).
+  const best = items.filter((i) => (i.href === root ? path === root : path.startsWith(i.href))).sort((a, b) => b.href.length - a.href.length)[0]?.href;
   return (
     <nav
       aria-label={label}
       className="max-md:fixed max-md:inset-x-0 max-md:bottom-0 max-md:z-30 max-md:flex max-md:gap-1 max-md:overflow-x-auto max-md:border-t max-md:border-line max-md:bg-rail max-md:p-2 md:flex md:flex-col md:gap-1 md:p-3"
     >
       {items.map(({ href, label: name, icon: IconCmp, group }, i) => {
-        const active = href === root ? path === root : path.startsWith(href);
+        const active = href === best;
         const heading = group && group !== items[i - 1]?.group ? group : null;
         return (
           <Fragment key={href}>

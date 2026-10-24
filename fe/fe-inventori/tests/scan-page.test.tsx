@@ -88,3 +88,15 @@ describe("halaman scan kategori", () => {
     expect(screen.queryByRole("button", { name: /pinjam/i })).toBeNull();
   });
 });
+
+import { scanTargetPath } from "@/lib/scan";
+describe("membaca isi QR", () => {
+  it("menerima alamat QR kategori di situs yang sama", () => {
+    expect(scanTargetPath("https://rakit.test/scan/c/C1", "https://rakit.test")).toBe("/scan/c/C1");
+  });
+  it("menolak situs lain dan teks bebas", () => {
+    expect(scanTargetPath("https://jahat.test/scan/c/C1", "https://rakit.test")).toBeNull();
+    expect(scanTargetPath("halo", "https://rakit.test")).toBeNull();
+    expect(scanTargetPath("https://rakit.test/admin", "https://rakit.test")).toBeNull();
+  });
+});
