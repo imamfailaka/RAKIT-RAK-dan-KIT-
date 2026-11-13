@@ -6,7 +6,7 @@ const schema = new mongoose.Schema(
     name: { type: String, required: true, trim: true },
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     password: { type: String, required: true, select: false },
-    role: { type: String, enum: ["admin", "technician"], default: "technician" },
+    role: { type: String, enum: ["admin", "manager", "technician"], default: "technician" },
     isActive: { type: Boolean, default: true },
     /** ID perangkat aplikasi Traccar Client milik teknisi (rahasia, tidak ikut di respons API). */
     trackerId: { type: String, unique: true, sparse: true, select: false },
@@ -22,7 +22,7 @@ export const userCreateDTO = Yup.object({
     .matches(/[A-Za-z]/, "Password harus mengandung huruf")
     .matches(/[0-9]/, "Password harus mengandung angka")
     .required("Password wajib diisi"),
-  role: Yup.string().oneOf(["admin", "technician"], "Role tidak valid").default("technician"),
+  role: Yup.string().oneOf(["admin", "manager", "technician"], "Role tidak valid").default("technician"),
   isActive: Yup.boolean().default(true),
 });
 
@@ -33,7 +33,7 @@ export const userUpdateDTO = Yup.object({
     .min(8, "Password minimal 8 karakter")
     .matches(/[A-Za-z]/, "Password harus mengandung huruf")
     .matches(/[0-9]/, "Password harus mengandung angka"),
-  role: Yup.string().oneOf(["admin", "technician"], "Role tidak valid"),
+  role: Yup.string().oneOf(["admin", "manager", "technician"], "Role tidak valid"),
   isActive: Yup.boolean(),
 });
 

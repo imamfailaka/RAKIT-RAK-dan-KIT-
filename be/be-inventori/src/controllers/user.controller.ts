@@ -12,7 +12,7 @@ export default {
     try {
       const { limit = 10, page = 1, search, role } = req.query as any;
       const q: any = {};
-      if (role === "admin" || role === "technician") q.role = role;
+      if (role === "admin" || role === "manager" || role === "technician") q.role = role;
       if (search) q.$or = [{ name: new RegExp(String(search).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i") }, { email: new RegExp(String(search).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i") }];
       const lim = Math.min(Math.max(+limit || 10, 1), 100);
       const pg = Math.max(+page || 1, 1);

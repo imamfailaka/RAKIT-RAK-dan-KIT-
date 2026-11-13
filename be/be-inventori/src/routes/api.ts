@@ -16,7 +16,10 @@ const router = express.Router();
 router.post("/auth/login", authController.login);
 router.get("/auth/me", authMiddleware, authController.me);
 
-router.get("/users", authMiddleware, requireRole("admin"), userController.findAll);
+// Manager = pengawas: boleh melihat (GET) data operasional, tidak boleh mengubah.
+const viewer = [authMiddleware, requireRole("admin", "manager")];
+
+router.get("/users", ...viewer, userController.findAll);
 router.post("/users", authMiddleware, requireRole("admin"), userController.create);
 router.put("/users/:id", authMiddleware, requireRole("admin"), userController.update);
 
@@ -48,7 +51,7 @@ router.post("/scan/:serial/return", ...technician, scanController.return);
 
 // Lokasi HP teknisi: teknisi check-in, admin melihat peta.
 router.post("/locations/checkin", ...technician, locationController.checkin);
-router.get("/locations", ...admin, locationController.list);
+router.get("/locations", ...viewer, locationController.list);
 router.get("/locations/tracker", ...technician, locationController.tracker);
 router.post("/locations/tracker", ...technician, locationController.newTracker);
 // Aplikasi Traccar Client (tracking latar belakang): tanpa JWT, dijaga ID perangkat acak per teknisi.
@@ -58,6 +61,8 @@ router.get("/traccar", locationController.traccar);
 // Bot Telegram: tanpa JWT, dijaga header rahasia Telegram.
 router.post("/telegram/webhook", telegramController.webhook);
 router.get("/telegram/setup", telegramController.setup);
+// Ringkasan pagi otomatis (Vercel Cron, dijaga CRON_SECRET).
+router.get("/telegram/daily", telegramController.daily);
 
 router.get("/dashboard", ...anyUser, dashboardController.get);
 

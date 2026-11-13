@@ -2,6 +2,8 @@
 
 import { SquaresFour, Tag, Users, Wrench, ArrowsLeftRight, QrCode, MapTrifold } from "@phosphor-icons/react";
 import NavRail, { type NavItem } from "@/components/NavRail";
+import { useRole } from "@/components/useSession";
+import { isManager } from "@/lib/permissions";
 
 const items: NavItem[] = [
   { href: "/admin", label: "Dashboard", icon: SquaresFour, group: "Ringkasan" },
@@ -13,6 +15,10 @@ const items: NavItem[] = [
   { href: "/admin/users", label: "Pengguna", icon: Users, group: "Administrasi" },
 ];
 
+/** Manager tidak butuh cetak QR (pekerjaan admin). */
+const managerItems = items.filter((i) => i.href !== "/admin/categories/qr");
+
 export default function AdminNav() {
-  return <NavRail items={items} label="Admin" root="/admin" />;
+  const manager = isManager(useRole());
+  return <NavRail items={manager ? managerItems : items} label={manager ? "Manager" : "Admin"} root="/admin" />;
 }

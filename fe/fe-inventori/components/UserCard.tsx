@@ -5,7 +5,7 @@ import { useAsync } from "@/hooks/useAsync";
 import { useSession } from "@/components/useSession";
 import { getMe } from "@/services/auth";
 
-const ROLE_LABEL = { admin: "Admin gudang", technician: "Teknisi" } as const;
+const ROLE_LABEL = { admin: "Admin gudang", manager: "Manager", technician: "Teknisi" } as const;
 
 /** Kartu pengguna di dasar sidebar: nama, peran, dan tombol keluar. Nama gagal dimuat → peran tetap tampil. */
 export default function UserCard() {

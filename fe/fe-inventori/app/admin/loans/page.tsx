@@ -17,6 +17,8 @@ import { CONDITION_LABEL, dateOrDash, refName } from "@/lib/labels";
 import { listAvailableEquipment } from "@/services/equipment";
 import { borrowEquipment, listLoans, returnLoan, type Loan } from "@/services/loans";
 import { listTechnicians } from "@/services/users";
+import { useRole } from "@/components/useSession";
+import { isManager } from "@/lib/permissions";
 
 function BorrowModal({ onClose, onDone }: { onClose: () => void; onDone: () => void }) {
   const { state, retry } = useAsync(async () => ({ equipment: await listAvailableEquipment(), technicians: await listTechnicians() }), "borrow-options");
@@ -40,6 +42,7 @@ export default function LoansPage() {
   const [returning, setReturning] = useState<Loan | null>(null);
   const { state, retry } = useAsync(() => listLoans(page, onlyOpen), `${page}-${onlyOpen}-${version}`);
   const reload = () => setVersion((v) => v + 1);
+  const readOnly = isManager(useRole());
 
   if (state.status === "error" && state.error.kind === "session") return <SessionExpired />;
   const ready = state.status === "ready";
@@ -48,7 +51,7 @@ export default function LoansPage() {
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between gap-2">
         <h1 className="text-2xl font-semibold">Peminjaman</h1>
-        <Button onClick={() => setBorrowing(true)}>Pinjamkan alat</Button>
+        {!readOnly && <Button onClick={() => setBorrowing(true)}>Pinjamkan alat</Button>}
       </div>
       <FilterChips
         label="Tampilan pinjaman"
@@ -70,7 +73,7 @@ export default function LoansPage() {
         status={state.status}
         errorMessage={state.status === "error" ? state.error.message : undefined}
         onRetry={retry}
-        rowActions={(r) => (r.returnedAt ? null : <Button size="sm" variant="secondary" onClick={() => setReturning(r)}>Kembalikan</Button>)}
+        rowActions={(r) => (r.returnedAt || readOnly ? null : <Button size="sm" variant="secondary" onClick={() => setReturning(r)}>Kembalikan</Button>)}
       />
       {ready && <Pagination pagination={state.data.pagination} onChange={setPage} />}
       {borrowing && <BorrowModal onClose={() => setBorrowing(false)} onDone={reload} />}

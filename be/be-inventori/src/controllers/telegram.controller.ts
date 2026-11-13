@@ -1,7 +1,7 @@
 import { timingSafeEqual } from "node:crypto";
 import { Request, Response } from "express";
 import { env } from "../utils/env";
-import { botContext } from "../services/telegram-notify";
+import { botContext, sendDailySummary } from "../services/telegram-notify";
 import { handleUpdate } from "../services/telegram";
 
 const same = (a: string, b: string) => {
@@ -21,6 +21,22 @@ export default {
       /* selalu jawab 200 agar Telegram tidak mengulang kiriman */
     }
     res.json({ ok: true });
+  },
+  /**
+   * Ringkasan pagi ke grup Telegram. Dipanggil Vercel Cron (vercel.json) yang mengirim
+   * header `Authorization: Bearer <CRON_SECRET>`; tanpa CRON_SECRET yang cocok ditolak.
+   */
+  async daily(req: Request, res: Response) {
+    const secret = env.CRON_SECRET;
+    const given = String(req.header("authorization") ?? "");
+    if (!secret || !same(given, `Bearer ${secret}`)) return res.status(403).json({ meta: { status: 403, message: "forbidden" }, data: null });
+    try {
+      const sent = await sendDailySummary();
+      res.json({ meta: { status: 200, message: sent ? "sent" : "telegram not configured" }, data: null });
+    } catch (error) {
+      console.error("daily summary failed", error);
+      res.status(500).json({ meta: { status: 500, message: "failed" }, data: null });
+    }
   },
   /** Daftarkan webhook sekali setelah env diisi: buka /api/telegram/setup?key=<TELEGRAM_WEBHOOK_SECRET>. */
   async setup(req: Request, res: Response) {

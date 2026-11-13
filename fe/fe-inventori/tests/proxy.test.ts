@@ -13,7 +13,13 @@ const location = (res: Response) => new URL(res.headers.get("location")!);
 const admin = () => makeJwt({ id: "u1", role: "admin", exp: future });
 const tech = () => makeJwt({ id: "u2", role: "technician", exp: future });
 
+const manager = () => makeJwt({ id: "u3", role: "manager", exp: future });
+
 describe("proxy", () => {
+  it("manager boleh membuka area /admin dan dijauhkan dari /my", () => {
+    expect(proxy(req("/admin/locations", manager())).headers.get("location")).toBeNull();
+    expect(location(proxy(req("/my", manager()))).pathname).toBe("/admin");
+  });
   it("redirects to login with next when there is no cookie", () => {
     const res = proxy(req("/admin/equipment"));
     expect(location(res).pathname).toBe("/auth/login");

@@ -18,3 +18,9 @@ export function useSession() {
     },
   };
 }
+
+/** Peran pengguna yang sedang login (tanpa router), untuk menampilkan/menyembunyikan tombol. */
+export function useRole() {
+  const token = useSyncExternalStore(subscribeAuth, () => getToken() ?? "", () => "");
+  return token && !isExpired(token) ? decodeToken(token)?.role : undefined;
+}

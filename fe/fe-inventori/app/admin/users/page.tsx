@@ -16,11 +16,14 @@ const fields: Field[] = [
     required: true,
     options: [
       { value: "technician", label: "Teknisi" },
+      { value: "manager", label: "Manager (lihat saja)" },
       { value: "admin", label: "Admin" },
     ],
   },
   { name: "isActive", label: "Akun aktif", type: "checkbox" },
 ];
+
+const ROLE_LABEL: Record<string, string> = { admin: "Admin", manager: "Manager", technician: "Teknisi" };
 
 export default function UsersPage() {
   return (
@@ -29,7 +32,7 @@ export default function UsersPage() {
       columns={[
         { header: "Nama", render: (r) => r.name },
         { header: "Email", render: (r) => r.email },
-        { header: "Peran", render: (r) => (r.role === "admin" ? "Admin" : "Teknisi") },
+        { header: "Peran", render: (r) => ROLE_LABEL[r.role] ?? r.role },
         { header: "Status", render: (r) => <Badge tone={r.isActive ? "ok" : "neutral"}>{r.isActive ? "Aktif" : "Nonaktif"}</Badge> },
       ]}
       load={(page, q) => usersAdmin.list({ page, limit: 10, search: q?.search, role: q?.filter || undefined })}
@@ -39,6 +42,7 @@ export default function UsersPage() {
       filters={[
         { value: "", label: "Semua" },
         { value: "admin", label: "Admin" },
+        { value: "manager", label: "Manager" },
         { value: "technician", label: "Teknisi" },
       ]}
       fields={fields}

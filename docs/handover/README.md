@@ -12,7 +12,7 @@ Kredensial tidak pernah ditaruh di repo atau chat. Deploy belum dijalankan; lang
 Tidak perlu SMTP, Midtrans, atau layanan email: akun dibuat admin.
 
 ## 2. Environment variable
-Backend (`be-inventori`): `DATABASE_URL`, `SECRET` (string acak panjang), `CLIENT_HOST` (URL frontend), `OVERDUE_DAYS` (default 7), `SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD`. Opsional untuk bot Telegram: `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`, `TELEGRAM_WEBHOOK_SECRET`.
+Backend (`be-inventori`): `DATABASE_URL`, `SECRET` (string acak panjang), `CLIENT_HOST` (URL frontend), `OVERDUE_DAYS` (default 7), `CRON_SECRET` (string acak; untuk ringkasan harian Telegram), `SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD`. Opsional untuk bot Telegram: `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`, `TELEGRAM_WEBHOOK_SECRET`.
 Frontend (`fe-inventori`): `NEXT_PUBLIC_API_URL` (URL backend + `/api`).
 
 ## 3. Urutan
@@ -90,3 +90,27 @@ Tips agar teknisi rutin membuka HP (dan lokasi ikut terkirim):
 7. **Pengingat terjadwal di grup Telegram** (mis. jam 08.00 dan 13.00: "Silakan kirim lokasi") bisa dibuat dari fitur pesan terjadwal Telegram tanpa biaya.
 
 Env baru (opsional) di backend: `LOCATION_STALE_HOURS` (bawaan 4).
+
+
+## Peran pengguna
+
+Aplikasi internal: **tidak ada registrasi publik**. Semua akun dibuat admin di menu Pengguna.
+
+| Fitur | Admin | Manager | Teknisi |
+| --- | --- | --- | --- |
+| Dashboard ringkasan | ✅ | ✅ | milik sendiri |
+| Lihat alat, kategori, peminjaman & riwayat | ✅ | ✅ (lihat saja) | alat ✅, pinjaman milik sendiri |
+| Tambah/ubah alat, kategori, cetak QR | ✅ | ❌ | ❌ |
+| Catat pinjam/kembali manual | ✅ | ❌ | ❌ |
+| Pinjam/kembali lewat scan QR | ❌ | ❌ | ✅ |
+| Peta teknisi & jejak lokasi | ✅ | ✅ | ❌ |
+| Kelola akun pengguna | ✅ | lihat daftar saja | ❌ |
+| Perintah & ringkasan bot Telegram | ✅ | ✅ | ❌ |
+
+Manager memakai area `/admin` dengan banner "Mode manager"; tombol ubah disembunyikan dan API menolak semua permintaan ubah dari manager (diuji di `tests/manager-role.test.ts`).
+
+## Bot Telegram untuk manager
+
+Perintah di grup: `/ringkasan` (jumlah alat, tersedia, dipinjam, terlambat, rusak/perbaikan, kalibrasi ≤30 hari), `/terlambat`, `/rusak`, `/kalibrasi`, `/posisi` (posisi terakhir teknisi yang sedang memegang alat + link Google Maps), `/dipinjam`, `/riwayat [n]`, `/bantuan`.
+
+**Ringkasan pagi otomatis**: `vercel.json` di backend menjadwalkan `GET /api/telegram/daily` setiap hari pukul 01.00 UTC (08.00 WIB; di paket Hobby Vercel bisa meleset hingga ±1 jam). Isi env `CRON_SECRET` di project backend; Vercel mengirimkannya otomatis sebagai header `Authorization: Bearer <CRON_SECRET>`.

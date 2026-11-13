@@ -21,7 +21,7 @@ export interface ScanStore {
 }
 
 export type ScanDeps = LoanDeps & { scan: ScanStore };
-export type Caller = { id: string; role: "admin" | "technician" };
+export type Caller = { id: string; role: "admin" | "manager" | "technician" };
 
 export type ScanInfo =
   | {

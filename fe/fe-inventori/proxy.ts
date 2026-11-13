@@ -19,7 +19,8 @@ export function proxy(req: NextRequest) {
     url.searchParams.set("next", path);
     return NextResponse.redirect(url);
   }
-  if (under(path, "/admin") && user.role !== "admin") return NextResponse.redirect(new URL("/my", req.url));
+  // Area /admin dipakai admin dan manager (manager hanya melihat; tombol ubah disembunyikan, API menolak).
+  if (under(path, "/admin") && user.role === "technician") return NextResponse.redirect(new URL("/my", req.url));
   if (under(path, "/my") && user.role !== "technician") return NextResponse.redirect(new URL("/admin", req.url));
   return NextResponse.next();
 }

@@ -1,6 +1,7 @@
 export const TOKEN_COOKIE = "inventori_token";
 
-export type Role = "admin" | "technician";
+/** admin = operasional penuh; manager = pengawas (lihat saja); technician = pinjam/kembali lewat scan. */
+export type Role = "admin" | "manager" | "technician";
 export type TokenPayload = { id: string; role: Role; exp: number };
 
 export function decodeToken(token: string): TokenPayload | null {
@@ -11,7 +12,7 @@ export function decodeToken(token: string): TokenPayload | null {
     const json = atob(b64.padEnd(b64.length + ((4 - (b64.length % 4)) % 4), "="));
     const p = JSON.parse(json) as Partial<TokenPayload>;
     if (typeof p.id !== "string" || typeof p.exp !== "number") return null;
-    if (p.role !== "admin" && p.role !== "technician") return null;
+    if (p.role !== "admin" && p.role !== "manager" && p.role !== "technician") return null;
     return { id: p.id, role: p.role, exp: p.exp };
   } catch {
     return null;

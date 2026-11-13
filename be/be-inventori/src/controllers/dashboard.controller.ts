@@ -11,7 +11,8 @@ const LIST_LIMIT = 10;
 export default {
   async get(req: IReqUser, res: Response) {
     try {
-      const isAdmin = req.user?.role === "admin";
+      // Admin dan manager melihat ringkasan seluruh gudang; teknisi hanya pinjamannya sendiri.
+      const isAdmin = req.user?.role === "admin" || req.user?.role === "manager";
       const loanFilter: any = { returnedAt: null };
       // Technicians only ever see their own loans (filter comes from the token).
       if (!isAdmin) loanFilter.technician = req.user!.id;

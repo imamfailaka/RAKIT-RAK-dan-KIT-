@@ -1,4 +1,4 @@
-const ROLES = ["admin", "technician"] as const;
+const ROLES = ["admin", "manager", "technician"] as const;
 
 const pick = (body: any, keys: string[]) => {
   const out: Record<string, unknown> = {};
@@ -9,7 +9,7 @@ const pick = (body: any, keys: string[]) => {
 export function buildUserPayload(body: any) {
   const p = pick(body, ["name", "email", "password", "role", "isActive"]) as any;
   if (p.role !== undefined && !ROLES.includes(p.role)) delete p.role;
-  return p as { name?: string; email?: string; password?: string; role?: "admin" | "technician"; isActive?: boolean };
+  return p as { name?: string; email?: string; password?: string; role?: "admin" | "manager" | "technician"; isActive?: boolean };
 }
 
 const CONDITIONS = ["good", "broken", "repair"];

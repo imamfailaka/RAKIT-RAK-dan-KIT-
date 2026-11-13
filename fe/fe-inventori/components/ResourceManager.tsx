@@ -14,6 +14,8 @@ import SessionExpired from "@/components/SessionExpired";
 import { useToast } from "@/components/Toast";
 import type { Page } from "@/lib/crud";
 import { reportError } from "@/lib/handle-error";
+import { isManager } from "@/lib/permissions";
+import { useRole } from "@/components/useSession";
 
 type Row = { _id: string };
 export type Query = { search: string; filter: string; filter2: string };
@@ -25,9 +27,9 @@ export default function ResourceManager<T extends Row, I>({
   fields,
   toValues,
   toPayload,
-  create,
-  update,
-  remove,
+  create: createFn,
+  update: updateFn,
+  remove: removeFn,
   rowActions,
   newValues,
   searchable,
@@ -60,6 +62,11 @@ export default function ResourceManager<T extends Row, I>({
 }) {
   const router = useRouter();
   const notify = useToast();
+  // Manager = pengawas: tombol Tambah/Ubah/Hapus disembunyikan (API juga menolak).
+  const readOnly = isManager(useRole());
+  const create = readOnly ? undefined : createFn;
+  const update = readOnly ? undefined : updateFn;
+  const remove = readOnly ? undefined : removeFn;
   const [page, setPage] = useState(1);
   const [version, setVersion] = useState(0);
   const [editing, setEditing] = useState<T | "new" | null>(null);

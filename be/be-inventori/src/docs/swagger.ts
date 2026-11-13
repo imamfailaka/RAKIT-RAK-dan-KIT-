@@ -25,6 +25,7 @@ export const swaggerDocument = {
     "/api/locations": { get: op("Admin: latest position of technicians currently holding equipment + location history (query days=1..90, default 7)") },
     "/api/locations/tracker": { get: op("Technician: own Traccar Client device id (null if none) and number of items held"), post: op("Technician: create/replace own Traccar Client device id") },
     "/api/traccar": { post: { summary: "Traccar Client receiver (no JWT; device id is the key). JSON or OsmAnd params id/lat/lon/accuracy/timestamp. Points are stored only while the technician holds equipment; otherwise 200 ignored", responses: { 200: { description: "Saved" }, 400: { description: "Invalid data" }, 404: { description: "Unknown device" } } } },
+    "/api/telegram/daily": { get: { summary: "Vercel Cron: send daily warehouse summary to the Telegram group (Authorization: Bearer CRON_SECRET)", responses: { 200: { description: "OK" }, 403: { description: "Wrong/missing CRON_SECRET" } } } },
     "/api/dashboard": { get: op("Dashboard (admin: all; technician: own loans)") },
   },
 };

@@ -17,7 +17,7 @@ const deps: ScanDeps = {
   scan: mongoScanStore,
 };
 const text = (v: unknown) => (typeof v === "string" ? v.slice(0, 500) : undefined);
-const caller = (req: IReqUser) => ({ id: req.user!.id, role: req.user!.role as "admin" | "technician" });
+const caller = (req: IReqUser) => ({ id: req.user!.id, role: req.user!.role });
 
 function fail(res: Response, r: { code: 400 | 403 | 404 | 409; message: string }) {
   if (r.code === 404) return response.notFound(res, r.message);
