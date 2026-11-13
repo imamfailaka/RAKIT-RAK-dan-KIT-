@@ -45,10 +45,12 @@ export default function LocationMap({ latest, history, focus }: { latest: Latest
     if (!L || !map.current || !layer.current) return;
     layer.current.clearLayers();
     const shown = focus ? history.filter((h) => h.technicianId === focus) : history;
+    const bounds: [number, number][] = [];
     if (focus && shown.length > 1) {
       // Jejak perjalanan satu teknisi, diurutkan dari yang terlama.
       const track = [...shown].sort((a, b) => new Date(a.at).getTime() - new Date(b.at).getTime()).map((h): [number, number] => [h.lat, h.lng]);
       L.polyline(track, { color: "#2563eb", weight: 3, opacity: 0.7 }).addTo(layer.current);
+      bounds.push(...track); // zoom mengikuti seluruh rute, bukan hanya titik terakhir
     }
     for (const h of shown) {
       L.circleMarker([h.lat, h.lng], { radius: 4, color: "#64748b", weight: 1, fillOpacity: 0.5 })
@@ -68,8 +70,9 @@ export default function LocationMap({ latest, history, focus }: { latest: Latest
         )
         .addTo(layer.current);
     }
-    if (points.length === 1) map.current.setView(points[0], 15);
-    else if (points.length > 1) map.current.fitBounds(L.latLngBounds(points), { padding: [40, 40], maxZoom: 15 });
+    bounds.push(...points);
+    if (bounds.length === 1) map.current.setView(bounds[0], 15);
+    else if (bounds.length > 1) map.current.fitBounds(L.latLngBounds(bounds), { padding: [40, 40], maxZoom: 15 });
   }, [ready, latest, history, focus]);
 
   return <div ref={box} data-testid="location-map" className="h-[60vh] min-h-[320px] w-full overflow-hidden rounded-[18px] border border-line" />;
