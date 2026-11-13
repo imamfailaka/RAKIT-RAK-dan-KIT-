@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1360" viewBox="0 0 1400 1360" font-family="DejaVu Sans, Arial, sans-serif">
+<defs><marker id="open" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10" fill="none" stroke="#000" stroke-width="1.2"/></marker></defs>
+<rect width="1400" height="1360" fill="#fff"/>
+<rect x="320" y="40" width="680" height="1290" fill="none" stroke="#000" stroke-width="1.5"/>
+<line x1="320" y1="90" x2="1000" y2="90" stroke="#000" stroke-width="1"/>
+<text x="660" y="72" text-anchor="middle" font-size="18" font-weight="bold">Sistem Rakit</text>
+<line x1="202" y1="540" x2="470.0" y2="130" stroke="#000" stroke-width="1"/>
+<line x1="202" y1="540" x2="470.0" y2="186" stroke="#000" stroke-width="1"/>
+<line x1="202" y1="540" x2="470.0" y2="242" stroke="#000" stroke-width="1"/>
+<line x1="202" y1="540" x2="470.0" y2="298" stroke="#000" stroke-width="1"/>
+<line x1="202" y1="540" x2="470.0" y2="354" stroke="#000" stroke-width="1"/>
+<line x1="202" y1="540" x2="470.0" y2="410" stroke="#000" stroke-width="1"/>
+<line x1="202" y1="540" x2="470.0" y2="466" stroke="#000" stroke-width="1"/>
+<line x1="202" y1="540" x2="470.0" y2="522" stroke="#000" stroke-width="1"/>
+<line x1="202" y1="540" x2="470.0" y2="634" stroke="#000" stroke-width="1"/>
+<line x1="202" y1="540" x2="470.0" y2="690" stroke="#000" stroke-width="1"/>
+<line x1="202" y1="540" x2="470.0" y2="746" stroke="#000" stroke-width="1"/>
+<line x1="202" y1="540" x2="470.0" y2="802" stroke="#000" stroke-width="1"/>
+<line x1="202" y1="540" x2="470.0" y2="858" stroke="#000" stroke-width="1"/>
+<line x1="202" y1="540" x2="470.0" y2="914" stroke="#000" stroke-width="1"/>
+<line x1="1198" y1="540" x2="850.0" y2="130" stroke="#000" stroke-width="1"/>
+<line x1="1198" y1="540" x2="850.0" y2="522" stroke="#000" stroke-width="1"/>
+<line x1="1198" y1="540" x2="850.0" y2="578" stroke="#000" stroke-width="1"/>
+<line x1="1198" y1="540" x2="850.0" y2="634" stroke="#000" stroke-width="1"/>
+<line x1="1198" y1="540" x2="850.0" y2="690" stroke="#000" stroke-width="1"/>
+<line x1="1198" y1="540" x2="850.0" y2="746" stroke="#000" stroke-width="1"/>
+<line x1="1198" y1="540" x2="850.0" y2="802" stroke="#000" stroke-width="1"/>
+<line x1="1198" y1="540" x2="850.0" y2="858" stroke="#000" stroke-width="1"/>
+<line x1="1198" y1="540" x2="850.0" y2="914" stroke="#000" stroke-width="1"/>
+<line x1="1198" y1="1040" x2="850.0" y2="130" stroke="#000" stroke-width="1"/>
+<line x1="1198" y1="1040" x2="850.0" y2="858" stroke="#000" stroke-width="1"/>
+<line x1="1198" y1="1040" x2="850.0" y2="914" stroke="#000" stroke-width="1"/>
+<line x1="1198" y1="1040" x2="850.0" y2="970" stroke="#000" stroke-width="1"/>
+<line x1="1198" y1="1040" x2="850.0" y2="1026" stroke="#000" stroke-width="1"/>
+<line x1="1198" y1="1040" x2="850.0" y2="1082" stroke="#000" stroke-width="1"/>
+<line x1="1198" y1="1040" x2="850.0" y2="1138" stroke="#000" stroke-width="1"/>
+<line x1="1198" y1="1040" x2="850.0" y2="1194" stroke="#000" stroke-width="1"/>
+<line x1="1198" y1="1040" x2="850.0" y2="1250" stroke="#000" stroke-width="1"/>
+<ellipse cx="660" cy="130" rx="190.0" ry="21.0" fill="#fff" stroke="#000" stroke-width="1.2"/>
+<text x="660" y="135" text-anchor="middle" font-size="13.5">Login</text>
+<ellipse cx="660" cy="186" rx="190.0" ry="21.0" fill="#fff" stroke="#000" stroke-width="1.2"/>
+<text x="660" y="191" text-anchor="middle" font-size="13.5">Mengelola pengguna (membuat akun)</text>
+<ellipse cx="660" cy="242" rx="190.0" ry="21.0" fill="#fff" stroke="#000" stroke-width="1.2"/>
+<text x="660" y="247" text-anchor="middle" font-size="13.5">Mengelola kategori</text>
+<ellipse cx="660" cy="298" rx="190.0" ry="21.0" fill="#fff" stroke="#000" stroke-width="1.2"/>
+<text x="660" y="303" text-anchor="middle" font-size="13.5">Mengelola data alat</text>
+<ellipse cx="660" cy="354" rx="190.0" ry="21.0" fill="#fff" stroke="#000" stroke-width="1.2"/>
+<text x="660" y="359" text-anchor="middle" font-size="13.5">Mencetak QR kategori</text>
+<ellipse cx="660" cy="410" rx="190.0" ry="21.0" fill="#fff" stroke="#000" stroke-width="1.2"/>
+<text x="660" y="415" text-anchor="middle" font-size="13.5">Mencatat peminjaman manual</text>
+<ellipse cx="660" cy="466" rx="190.0" ry="21.0" fill="#fff" stroke="#000" stroke-width="1.2"/>
+<text x="660" y="471" text-anchor="middle" font-size="13.5">Mencatat pengembalian manual</text>
+<ellipse cx="660" cy="522" rx="190.0" ry="21.0" fill="#fff" stroke="#000" stroke-width="1.2"/>
+<text x="660" y="527" text-anchor="middle" font-size="13.5">Melihat dashboard ringkasan</text>
+<ellipse cx="660" cy="578" rx="190.0" ry="21.0" fill="#fff" stroke="#000" stroke-width="1.2"/>
+<text x="660" y="583" text-anchor="middle" font-size="13.5">Melihat daftar pengguna</text>
+<ellipse cx="660" cy="634" rx="190.0" ry="21.0" fill="#fff" stroke="#000" stroke-width="1.2"/>
+<text x="660" y="639" text-anchor="middle" font-size="13.5">Melihat peta &amp; jejak lokasi teknisi</text>
+<ellipse cx="660" cy="690" rx="190.0" ry="21.0" fill="#fff" stroke="#000" stroke-width="1.2"/>
+<text x="660" y="695" text-anchor="middle" font-size="13.5">Melihat riwayat peminjaman</text>
+<ellipse cx="660" cy="746" rx="190.0" ry="21.0" fill="#fff" stroke="#000" stroke-width="1.2"/>
+<text x="660" y="751" text-anchor="middle" font-size="13.5">Menerima notifikasi &amp; ringkasan harian Telegram</text>
+<ellipse cx="660" cy="802" rx="190.0" ry="21.0" fill="#fff" stroke="#000" stroke-width="1.2"/>
+<text x="660" y="807" text-anchor="middle" font-size="13.5">Memantau lewat perintah bot Telegram</text>
+<ellipse cx="660" cy="858" rx="190.0" ry="21.0" fill="#fff" stroke="#000" stroke-width="1.2"/>
+<text x="660" y="863" text-anchor="middle" font-size="13.5">Melihat daftar alat</text>
+<ellipse cx="660" cy="914" rx="190.0" ry="21.0" fill="#fff" stroke="#000" stroke-width="1.2"/>
+<text x="660" y="919" text-anchor="middle" font-size="13.5">Melihat yang sedang dipinjam</text>
+<ellipse cx="660" cy="970" rx="190.0" ry="21.0" fill="#fff" stroke="#000" stroke-width="1.2"/>
+<text x="660" y="975" text-anchor="middle" font-size="13.5">Scan QR kategori</text>
+<ellipse cx="660" cy="1026" rx="190.0" ry="21.0" fill="#fff" stroke="#000" stroke-width="1.2"/>
+<text x="660" y="1031" text-anchor="middle" font-size="13.5">Meminjam unit (scan)</text>
+<ellipse cx="660" cy="1082" rx="190.0" ry="21.0" fill="#fff" stroke="#000" stroke-width="1.2"/>
+<text x="660" y="1087" text-anchor="middle" font-size="13.5">Mengembalikan unit (scan)</text>
+<ellipse cx="660" cy="1138" rx="190.0" ry="21.0" fill="#fff" stroke="#000" stroke-width="1.2"/>
+<text x="660" y="1143" text-anchor="middle" font-size="13.5">Mengirim lokasi GPS (selama memegang alat)</text>
+<ellipse cx="660" cy="1194" rx="190.0" ry="21.0" fill="#fff" stroke="#000" stroke-width="1.2"/>
+<text x="660" y="1199" text-anchor="middle" font-size="13.5">Mengatur tracking otomatis (Traccar)</text>
+<ellipse cx="660" cy="1250" rx="190.0" ry="21.0" fill="#fff" stroke="#000" stroke-width="1.2"/>
+<text x="660" y="1255" text-anchor="middle" font-size="13.5">Melihat pinjaman saya</text>
+<path d="M470.0,1026 C423.45,1026 423.45,970 470.0,970" fill="none" stroke="#000" stroke-width="1" stroke-dasharray="6,4" marker-end="url(#open)"/>
+<text x="431.0" y="1002.0" text-anchor="end" font-size="11" font-style="italic">«include»</text>
+<path d="M470.0,1082 C370.25,1082 370.25,970 470.0,970" fill="none" stroke="#000" stroke-width="1" stroke-dasharray="6,4" marker-end="url(#open)"/>
+<text x="391.0" y="1030.0" text-anchor="end" font-size="11" font-style="italic">«include»</text>
+<path d="M470.0,1026 C370.25,1026 370.25,1138 470.0,1138" fill="none" stroke="#000" stroke-width="1" stroke-dasharray="6,4" marker-end="url(#open)"/>
+<text x="391.0" y="1086.0" text-anchor="end" font-size="11" font-style="italic">«include»</text>
+<path d="M470.0,1082 C423.45,1082 423.45,1138 470.0,1138" fill="none" stroke="#000" stroke-width="1" stroke-dasharray="6,4" marker-end="url(#open)"/>
+<text x="431.0" y="1114.0" text-anchor="end" font-size="11" font-style="italic">«include»</text>
+<g stroke="#000" stroke-width="1.6" fill="none"><circle cx="170" cy="490" r="16" fill="#fff"/><line x1="170" y1="506" x2="170" y2="560"/><line x1="138" y1="540" x2="202" y2="540"/><line x1="170" y1="560" x2="146" y2="598"/><line x1="170" y1="560" x2="194" y2="598"/></g><text x="170" y="622" text-anchor="middle" font-size="16" font-weight="bold">Admin</text>
+<g stroke="#000" stroke-width="1.6" fill="none"><circle cx="1230" cy="490" r="16" fill="#fff"/><line x1="1230" y1="506" x2="1230" y2="560"/><line x1="1198" y1="540" x2="1262" y2="540"/><line x1="1230" y1="560" x2="1206" y2="598"/><line x1="1230" y1="560" x2="1254" y2="598"/></g><text x="1230" y="622" text-anchor="middle" font-size="16" font-weight="bold">Manager</text>
+<g stroke="#000" stroke-width="1.6" fill="none"><circle cx="1230" cy="990" r="16" fill="#fff"/><line x1="1230" y1="1006" x2="1230" y2="1060"/><line x1="1198" y1="1040" x2="1262" y2="1040"/><line x1="1230" y1="1060" x2="1206" y2="1098"/><line x1="1230" y1="1060" x2="1254" y2="1098"/></g><text x="1230" y="1122" text-anchor="middle" font-size="16" font-weight="bold">Teknisi</text>
+<text x="320" y="1352" font-size="11" fill="#444">Aplikasi internal: tidak ada registrasi publik, semua akun dibuat admin. Lokasi teknisi hanya dicatat selama memegang alat.</text>
+</svg>
