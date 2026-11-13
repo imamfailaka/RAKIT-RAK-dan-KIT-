@@ -49,6 +49,11 @@ router.post("/scan/:serial/return", ...technician, scanController.return);
 // Lokasi HP teknisi: teknisi check-in, admin melihat peta.
 router.post("/locations/checkin", ...technician, locationController.checkin);
 router.get("/locations", ...admin, locationController.list);
+router.get("/locations/tracker", ...technician, locationController.tracker);
+router.post("/locations/tracker", ...technician, locationController.newTracker);
+// Aplikasi Traccar Client (tracking latar belakang): tanpa JWT, dijaga ID perangkat acak per teknisi.
+router.post("/traccar", locationController.traccar);
+router.get("/traccar", locationController.traccar);
 
 // Bot Telegram: tanpa JWT, dijaga header rahasia Telegram.
 router.post("/telegram/webhook", telegramController.webhook);

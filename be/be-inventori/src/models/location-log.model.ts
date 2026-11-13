@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 
-/** Jejak lokasi HP teknisi saat pinjam, kembali, atau check-in. Disimpan 90 hari lalu dihapus otomatis. */
+/** Jejak lokasi HP teknisi saat pinjam, kembali, check-in, atau otomatis dari Traccar Client. Disimpan 90 hari lalu dihapus otomatis. */
 const schema = new mongoose.Schema(
   {
     technician: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     equipment: { type: mongoose.Schema.Types.ObjectId, ref: "Equipment", default: null },
-    event: { type: String, enum: ["borrow", "return", "checkin"], required: true },
+    event: { type: String, enum: ["borrow", "return", "checkin", "auto"], required: true },
     lat: { type: Number, required: true, min: -90, max: 90 },
     lng: { type: Number, required: true, min: -180, max: 180 },
     accuracy: { type: Number },

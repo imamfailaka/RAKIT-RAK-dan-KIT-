@@ -1,5 +1,5 @@
 export type GeoPoint = { lat: number; lng: number; accuracy?: number };
-export type LocationEvent = "borrow" | "return" | "checkin";
+export type LocationEvent = "borrow" | "return" | "checkin" | "auto";
 
 export type LocationEntry = {
   id: string;

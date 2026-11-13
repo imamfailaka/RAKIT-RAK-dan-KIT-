@@ -4,6 +4,7 @@ import Badge from "@/components/Badge";
 import { useState } from "react";
 import DataTable from "@/components/DataTable";
 import LocationCheckin from "@/components/LocationCheckin";
+import TrackerSetup from "@/components/TrackerSetup";
 import Pagination from "@/components/Pagination";
 import SessionExpired from "@/components/SessionExpired";
 import { useAsync } from "@/hooks/useAsync";
@@ -20,6 +21,7 @@ export default function MyHome() {
   return (
     <div className="flex flex-col gap-8">
       <LocationCheckin />
+      <TrackerSetup />
       <section className="flex flex-col gap-3">
         <h1 className="text-2xl font-semibold">Pinjaman saya</h1>
         <DataTable<Loan>

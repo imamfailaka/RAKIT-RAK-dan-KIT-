@@ -56,7 +56,21 @@ Kapan lokasi tercatat:
 
 Admin melihat semuanya di menu **Peta teknisi** (`/admin/locations`): titik besar = posisi terakhir tiap teknisi (hijau aktif, abu-abu lebih dari `LOCATION_STALE_HOURS` jam tidak update, bawaan 4), titik kecil = riwayat. Tombol "Lihat jejak" menampilkan riwayat satu teknisi. Riwayat lokasi dihapus otomatis setelah 90 hari (index TTL di koleksi `locationlogs`).
 
-Batasan: aplikasi web tidak bisa melacak di latar belakang. Lokasi hanya terkirim saat teknisi membuka web dan melakukan aksi. Pelacakan terus-menerus memerlukan aplikasi HP terpisah (mis. Traccar, open-source) dan di luar cakupan ini.
+Batasan web: browser tidak bisa melacak di latar belakang, jadi untuk tracking terus-menerus di lapangan dipakai aplikasi gratis **Traccar Client** (lihat bawah).
+
+### Tracking otomatis di lapangan (Traccar Client, gratis)
+
+Aplikasi open-source Traccar Client (Android/iOS) mengirim GPS tiap beberapa menit walau HP terkunci. Datanya langsung masuk ke backend ini (`POST/GET /api/traccar`), tidak perlu server Traccar, tidak ada biaya. Titiknya tampil di Peta teknisi sebagai event "Otomatis"; "Lihat jejak" menggambar garis rute teknisi.
+
+Pemasangan oleh teknisi (halaman `/my`, kartu "Tracking otomatis"):
+1. Tekan **Buat ID perangkat saya** (ID acak `trk_...`, rahasia, berfungsi sebagai kunci).
+2. Pasang Traccar Client, isi **Server URL** = `<NEXT_PUBLIC_API_URL>/traccar` (mis. `https://inventori-api.vercel.app/api/traccar`) dan **Device identifier** = ID tadi (tombol Salin tersedia).
+3. Frequency 300 detik, Location accuracy High, izin lokasi "Selalu", matikan penghemat baterai untuk aplikasi ini.
+4. Tekan Start saat mulai kerja, Stop setelah jam kerja.
+
+Keamanan: hanya ID milik teknisi aktif yang diterima (akun nonaktif otomatis ditolak). Bila HP hilang/ganti HP, teknisi menekan **Buat ID baru**; ID lama langsung tidak berlaku. Titik yang tertahan saat offline diterima sampai 7 hari ke belakang.
+
+Privasi (UU PDP): beri tahu teknisi secara tertulis bahwa lokasi dipantau, untuk keperluan apa, dan hanya selama jam kerja (Start/Stop). Riwayat dihapus otomatis setelah 90 hari.
 
 Tips agar teknisi rutin membuka HP (dan lokasi ikut terkirim):
 1. **Jadikan aturan kerja**: setiap ambil/kembalikan alat wajib lewat scan QR, bukan dicatat admin. Karena scan wajib GPS, lokasi otomatis tercatat.
@@ -64,6 +78,7 @@ Tips agar teknisi rutin membuka HP (dan lokasi ikut terkirim):
 3. **Pasang web ke layar utama HP** (Chrome: menu ⋮ → Tambahkan ke layar utama; Safari: Bagikan → Tambah ke Layar Utama) supaya sekali ketuk terbuka dan lokasi terkirim otomatis.
 4. **Izinkan lokasi "Selalu untuk situs ini"** sekali saja saat pertama dipakai, supaya tidak ada pop-up lagi dan check-in otomatis berjalan.
 5. **Pantau tiap hari dari Peta teknisi**: teknisi berstatus abu-abu ("Lama tidak update") diingatkan lewat grup Telegram.
-6. **Pengingat terjadwal di grup Telegram** (mis. jam 08.00 dan 13.00: "Silakan kirim lokasi") bisa dibuat dari fitur pesan terjadwal Telegram tanpa biaya.
+6. **Wajibkan Traccar Client menyala (Start) selama jam kerja** dan cek di peta: titik abu-abu berarti aplikasi mati atau HP tanpa sinyal.
+7. **Pengingat terjadwal di grup Telegram** (mis. jam 08.00 dan 13.00: "Silakan kirim lokasi") bisa dibuat dari fitur pesan terjadwal Telegram tanpa biaya.
 
 Env baru (opsional) di backend: `LOCATION_STALE_HOURS` (bawaan 4).

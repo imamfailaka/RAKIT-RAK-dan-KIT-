@@ -8,6 +8,8 @@ const schema = new mongoose.Schema(
     password: { type: String, required: true, select: false },
     role: { type: String, enum: ["admin", "technician"], default: "technician" },
     isActive: { type: Boolean, default: true },
+    /** ID perangkat aplikasi Traccar Client milik teknisi (rahasia, tidak ikut di respons API). */
+    trackerId: { type: String, unique: true, sparse: true, select: false },
   },
   { timestamps: true }
 );

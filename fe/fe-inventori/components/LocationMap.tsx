@@ -45,6 +45,11 @@ export default function LocationMap({ latest, history, focus }: { latest: Latest
     if (!L || !map.current || !layer.current) return;
     layer.current.clearLayers();
     const shown = focus ? history.filter((h) => h.technicianId === focus) : history;
+    if (focus && shown.length > 1) {
+      // Jejak perjalanan satu teknisi, diurutkan dari yang terlama.
+      const track = [...shown].sort((a, b) => new Date(a.at).getTime() - new Date(b.at).getTime()).map((h): [number, number] => [h.lat, h.lng]);
+      L.polyline(track, { color: "#2563eb", weight: 3, opacity: 0.7 }).addTo(layer.current);
+    }
     for (const h of shown) {
       L.circleMarker([h.lat, h.lng], { radius: 4, color: "#64748b", weight: 1, fillOpacity: 0.5 })
         .bindPopup(`${esc(h.technicianName)}<br>${EVENT_LABEL[h.event]}${h.serial ? ` · ${esc(h.equipmentName)} (${esc(h.serial)})` : ""}<br>${when(h.at)}`)

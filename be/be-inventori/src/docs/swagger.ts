@@ -23,6 +23,8 @@ export const swaggerDocument = {
     "/api/scan/{serial}/return": { post: op("Technician returns their own scanned loan with returnCondition and location {lat, lng, accuracy?} (400 if missing)") },
     "/api/locations/checkin": { post: op("Technician sends current phone GPS: body { location: { lat, lng, accuracy? } }") },
     "/api/locations": { get: op("Admin: latest position per technician + location history (query days=1..90, default 7)") },
+    "/api/locations/tracker": { get: op("Technician: own Traccar Client device id (null if none)"), post: op("Technician: create/replace own Traccar Client device id") },
+    "/api/traccar": { post: { summary: "Traccar Client receiver (no JWT; device id is the key). JSON or OsmAnd params id/lat/lon/accuracy/timestamp", responses: { 200: { description: "Saved" }, 400: { description: "Invalid data" }, 404: { description: "Unknown device" } } } },
     "/api/dashboard": { get: op("Dashboard (admin: all; technician: own loans)") },
   },
 };

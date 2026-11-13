@@ -9,6 +9,8 @@ import router from "./routes/api";
 export function mountApp(app: Express, ensureDb: () => Promise<void>) {
   app.use(cors({ origin: env.CLIENT_HOST }));
   app.use(express.json());
+  // Traccar Client versi lama mengirim lokasi sebagai form (OsmAnd).
+  app.use(express.urlencoded({ extended: false }));
   app.get("/", (_req, res) => res.json({ message: "Server is running", data: null }));
   app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
   app.use("/api", async (_req: Request, res: Response, next: NextFunction) => {

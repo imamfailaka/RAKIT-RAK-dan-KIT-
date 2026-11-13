@@ -1,5 +1,7 @@
 import { Response } from "express";
 import LocationLogModel from "../models/location-log.model";
+import UserModel from "../models/user.model";
+import { newTrackerId, parseTraccar } from "../services/traccar";
 import { IReqUser } from "../middlewares/auth";
 import { latestPerTechnician, parseLocation, type GeoPoint, type LocationEntry, type LocationEvent } from "../services/location";
 import { env } from "../utils/env";
@@ -26,6 +28,41 @@ export default {
       response.error(res, error, "failed to checkin");
     }
   },
+  /** Teknisi: lihat ID perangkat Traccar miliknya (null bila belum dibuat). */
+  async tracker(req: IReqUser, res: Response) {
+    try {
+      const user = await UserModel.findById(req.user!.id).select("+trackerId").lean<{ trackerId?: string }>();
+      response.success(res, { deviceId: user?.trackerId ?? null }, "success get tracker");
+    } catch (error) {
+      response.error(res, error, "failed to get tracker");
+    }
+  },
+  /** Teknisi: buat (atau ganti) ID perangkat. ID lama langsung tidak berlaku, mis. bila HP hilang. */
+  async newTracker(req: IReqUser, res: Response) {
+    try {
+      const deviceId = newTrackerId();
+      await UserModel.updateOne({ _id: req.user!.id }, { $set: { trackerId: deviceId } });
+      response.created(res, { deviceId }, "success create tracker");
+    } catch (error) {
+      response.error(res, error, "failed to create tracker");
+    }
+  },
+  /**
+   * Penerima data aplikasi Traccar Client (tanpa JWT). ID perangkat yang acak berfungsi sebagai kunci;
+   * hanya teknisi aktif yang diterima. Selalu menjawab cepat agar aplikasi tidak menumpuk antrean.
+   */
+  async traccar(req: IReqUser, res: Response) {
+    try {
+      const point = parseTraccar((req.query ?? {}) as Record<string, unknown>, req.body, new Date());
+      if (!point) return response.badRequest(res, "invalid location data");
+      const user = await UserModel.findOne({ trackerId: point.deviceId, role: "technician", isActive: true }).select("_id").lean<{ _id: unknown }>();
+      if (!user) return response.notFound(res, "unknown device");
+      await LocationLogModel.create({ technician: user._id, event: "auto", ...point.location, at: point.at });
+      response.success(res, null, "ok");
+    } catch (error) {
+      response.error(res, error, "failed to save location");
+    }
+  },
   /** Admin: posisi terakhir tiap teknisi + riwayat lokasi (default 7 hari terakhir). */
   async list(req: IReqUser, res: Response) {
     try {
@@ -35,7 +72,7 @@ export default {
         .populate("technician", "name")
         .populate("equipment", "name serial")
         .sort({ at: -1 })
-        .limit(1000)
+        .limit(5000)
         .lean();
       const history: LocationEntry[] = docs
         .filter((d: any) => d.technician)
