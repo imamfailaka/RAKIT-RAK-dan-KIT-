@@ -84,7 +84,7 @@ export default function LocationCheckin() {
             {notToday
               ? "Anda belum mengirim lokasi hari ini. Nyalakan GPS lalu tekan tombol di bawah."
               : `Terakhir terkirim ${time(last!)}.`}{" "}
-            Pinjam dan kembalikan alat lewat scan juga wajib GPS aktif.
+            Lokasi hanya dicatat selama Anda memegang alat.
           </p>
         </div>
       </div>

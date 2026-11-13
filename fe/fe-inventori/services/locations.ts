@@ -15,7 +15,8 @@ export type LocationEntry = {
   accuracy?: number;
   at: string;
 };
-export type LatestPosition = LocationEntry & { stale: boolean };
+/** Posisi terkini; hanya untuk teknisi yang sedang memegang alat (`holding` = jumlah alat). */
+export type LatestPosition = LocationEntry & { stale: boolean; holding: number };
 export type LocationOverview = { latest: LatestPosition[]; history: LocationEntry[]; staleHours: number };
 
 export const EVENT_LABEL: Record<LocationEvent, string> = { borrow: "Pinjam", return: "Kembali", checkin: "Check-in", auto: "Otomatis" };
@@ -33,9 +34,10 @@ export async function listLocations(days = 7): Promise<LocationOverview> {
 /** Alamat server yang diisikan di aplikasi Traccar Client. */
 export const traccarServerUrl = () => `${process.env.NEXT_PUBLIC_API_URL ?? ""}/traccar`;
 
-/** Teknisi: ID perangkat Traccar miliknya (null bila belum dibuat). */
-export async function getTracker(): Promise<{ deviceId: string | null }> {
-  return (await apiFetch<{ deviceId: string | null }>("/locations/tracker", { token: getToken() })).data;
+export type TrackerStatus = { deviceId: string | null; holding: number };
+/** Teknisi: ID perangkat Traccar miliknya (null bila belum dibuat) dan jumlah alat yang sedang dipegang. */
+export async function getTracker(): Promise<TrackerStatus> {
+  return (await apiFetch<TrackerStatus>("/locations/tracker", { token: getToken() })).data;
 }
 /** Teknisi: buat atau ganti ID perangkat; ID lama langsung tidak berlaku. */
 export async function createTracker(): Promise<{ deviceId: string }> {

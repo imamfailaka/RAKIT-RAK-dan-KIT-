@@ -6,7 +6,7 @@ vi.mock("@/components/LocationMap", () => ({ default: () => <div data-testid="lo
 afterEach(() => vi.restoreAllMocks());
 
 const env = (data: unknown) => new Response(JSON.stringify({ meta: { status: 200, message: "m" }, data }), { status: 200, headers: { "content-type": "application/json" } });
-const pos = (over = {}) => ({ id: "1", technicianId: "T1", technicianName: "Budi", event: "borrow", serial: "W33", lat: -6.9, lng: 107.6, at: "2026-11-14T03:00:00Z", stale: false, ...over });
+const pos = (over = {}) => ({ id: "1", technicianId: "T1", technicianName: "Budi", event: "borrow", serial: "W33", lat: -6.9, lng: 107.6, at: "2026-11-14T03:00:00Z", stale: false, holding: 1, ...over });
 
 describe("peta teknisi (admin)", () => {
   it("menampilkan peta dan status aktif / lama tidak update per teknisi", async () => {

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parseLocation, latestPerTechnician, type LocationEntry } from "../src/services/location";
+import { parseLocation, latestPerTechnician, onlyHolding, type LocationEntry } from "../src/services/location";
 
 describe("parseLocation", () => {
   it("menerima koordinat valid dan membulatkan akurasi", () => {
@@ -41,5 +41,16 @@ describe("latestPerTechnician", () => {
     expect(a.lat).toBe(5);
     expect(a.stale).toBe(false);
     expect(b.stale).toBe(true);
+  });
+});
+
+describe("onlyHolding (privasi)", () => {
+  it("hanya menampilkan teknisi yang masih memegang alat, beserta jumlahnya", () => {
+    const base = { event: "auto" as const, lat: 1, lng: 1, at: new Date(), stale: false };
+    const rows = onlyHolding(
+      [{ ...base, id: "1", technicianId: "a" }, { ...base, id: "2", technicianId: "b" }],
+      new Map([["a", 2], ["b", 0]]),
+    );
+    expect(rows.map((r) => [r.technicianId, r.holding])).toEqual([["a", 2]]);
   });
 });

@@ -43,3 +43,13 @@ export function latestPerTechnician(entries: LocationEntry[], now: Date, staleHo
     .map((e) => ({ ...e, stale: now.getTime() - new Date(e.at).getTime() > limit }))
     .sort((a, b) => new Date(b.at).getTime() - new Date(a.at).getTime());
 }
+
+export type ActivePosition = LatestPosition & { holding: number };
+
+/**
+ * Privasi: hanya teknisi yang sedang memegang alat yang tampil sebagai posisi terkini.
+ * Setelah semua alat dikembalikan, teknisi hilang dari peta langsung.
+ */
+export function onlyHolding(latest: LatestPosition[], holding: Map<string, number>): ActivePosition[] {
+  return latest.filter((p) => (holding.get(p.technicianId) ?? 0) > 0).map((p) => ({ ...p, holding: holding.get(p.technicianId)! }));
+}

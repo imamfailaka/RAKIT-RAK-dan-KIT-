@@ -28,7 +28,8 @@ export default function LocationsPage() {
         <div>
           <h1 className="text-2xl font-semibold">Peta teknisi</h1>
           <p className="text-sm text-muted">
-            Posisi diambil dari GPS HP teknisi saat pinjam, kembali, atau check-in.
+            Posisi diambil dari GPS HP teknisi saat pinjam, kembali, check-in, atau otomatis (Traccar). Demi privasi,
+            hanya teknisi yang sedang memegang alat yang tampil; setelah alat kembali, tracking berhenti.
             {data && ` Abu-abu = lebih dari ${data.staleHours} jam tidak update.`}
           </p>
         </div>
@@ -52,6 +53,7 @@ export default function LocationsPage() {
       <DataTable<Row>
         columns={[
           { header: "Teknisi", render: (r) => r.technicianName ?? "-" },
+          { header: "Memegang", render: (r) => `${r.holding} alat`, numeric: true },
           { header: "Terakhir", render: (r) => `${when(r.at)} · ${EVENT_LABEL[r.event]}${r.serial ? ` ${r.serial}` : ""}` },
           { header: "Status", render: (r) => (r.stale ? <Badge tone="warn">Lama tidak update</Badge> : <Badge tone="ok">Aktif</Badge>) },
           {
@@ -64,7 +66,7 @@ export default function LocationsPage() {
           },
         ]}
         rows={(data?.latest ?? []).map((r) => ({ ...r, _id: r.technicianId }))}
-        emptyMessage="Belum ada lokasi terkirim pada rentang ini."
+        emptyMessage="Tidak ada teknisi yang sedang memegang alat (atau belum ada lokasi terkirim)."
         status={state.status}
         errorMessage={state.status === "error" ? state.error.message : undefined}
         onRetry={retry}

@@ -58,6 +58,14 @@ Admin melihat semuanya di menu **Peta teknisi** (`/admin/locations`): titik besa
 
 Batasan web: browser tidak bisa melacak di latar belakang, jadi untuk tracking terus-menerus di lapangan dipakai aplikasi gratis **Traccar Client** (lihat bawah).
 
+### Privasi: tracking hanya selama teknisi memegang alat
+
+Lokasi teknisi hanya dicatat **selama ia sedang memegang (meminjam) alat**. Begitu semua alat dikembalikan, tracking otomatis terlepas:
+- Kiriman Traccar Client dari teknisi yang tidak memegang alat **dibuang** dan tidak disimpan (server tetap menjawab 200 agar aplikasi tidak menumpuk antrean).
+- Check-in manual/otomatis dari web ditolak (`409`) dan kartu "Lokasi saya" disembunyikan; kartu "Tracking otomatis" menampilkan status **nonaktif**.
+- Di Peta teknisi, posisi terkini hanya menampilkan teknisi yang masih memegang alat (kolom "Memegang" = jumlah alat). Titik terakhir yang tercatat adalah lokasi saat alat dikembalikan.
+- Riwayat titik selama masa pinjam tetap tersimpan sampai 90 hari sebagai catatan perjalanan alat.
+
 ### Tracking otomatis di lapangan (Traccar Client, gratis)
 
 Aplikasi open-source Traccar Client (Android/iOS) mengirim GPS tiap beberapa menit walau HP terkunci. Datanya langsung masuk ke backend ini (`POST/GET /api/traccar`), tidak perlu server Traccar, tidak ada biaya. Titiknya tampil di Peta teknisi sebagai event "Otomatis"; "Lihat jejak" menggambar garis rute teknisi.
@@ -66,11 +74,11 @@ Pemasangan oleh teknisi (halaman `/my`, kartu "Tracking otomatis"):
 1. Tekan **Buat ID perangkat saya** (ID acak `trk_...`, rahasia, berfungsi sebagai kunci).
 2. Pasang Traccar Client, isi **Server URL** = `<NEXT_PUBLIC_API_URL>/traccar` (mis. `https://inventori-api.vercel.app/api/traccar`) dan **Device identifier** = ID tadi (tombol Salin tersedia).
 3. Frequency 300 detik, Location accuracy High, izin lokasi "Selalu", matikan penghemat baterai untuk aplikasi ini.
-4. Tekan Start saat mulai kerja, Stop setelah jam kerja.
+4. Tekan Start saat membawa alat, Stop setelah semua alat dikembalikan (bila lupa Stop, server tetap tidak menyimpan lokasi).
 
 Keamanan: hanya ID milik teknisi aktif yang diterima (akun nonaktif otomatis ditolak). Bila HP hilang/ganti HP, teknisi menekan **Buat ID baru**; ID lama langsung tidak berlaku. Titik yang tertahan saat offline diterima sampai 7 hari ke belakang.
 
-Privasi (UU PDP): beri tahu teknisi secara tertulis bahwa lokasi dipantau, untuk keperluan apa, dan hanya selama jam kerja (Start/Stop). Riwayat dihapus otomatis setelah 90 hari.
+Privasi (UU PDP): beri tahu teknisi secara tertulis bahwa lokasi dipantau, untuk keperluan apa (keamanan alat), dan hanya selama memegang alat. Riwayat dihapus otomatis setelah 90 hari.
 
 Tips agar teknisi rutin membuka HP (dan lokasi ikut terkirim):
 1. **Jadikan aturan kerja**: setiap ambil/kembalikan alat wajib lewat scan QR, bukan dicatat admin. Karena scan wajib GPS, lokasi otomatis tercatat.
