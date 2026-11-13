@@ -44,3 +44,26 @@ Pemasangan (dilakukan pemilik, token jangan dikirim lewat chat atau disimpan di 
 5. Di grup, matikan Privacy Mode bot lewat BotFather (`/setprivacy` > Disable) bila perintah tanpa garis miring tidak dipakai; perintah `/dipinjam` tetap bekerja pada mode bawaan.
 
 Notifikasi bersifat best effort: bila Telegram tidak terjangkau, pinjam/kembali tetap berhasil dan tersimpan.
+
+## Monitoring lokasi teknisi (peta, gratis)
+
+Posisi alat di lapangan dilacak lewat GPS HP teknisi, tanpa biaya: lokasi dibaca dengan Geolocation API bawaan browser dan ditampilkan di peta OpenStreetMap (Leaflet). Tidak perlu API key, kartu kredit, atau aplikasi tambahan.
+
+Kapan lokasi tercatat:
+- **Pinjam dan kembali lewat scan QR**: GPS wajib. Bila lokasi mati atau izin ditolak, tombol Pinjam/Kembalikan tidak diproses dan teknisi mendapat petunjuk cara mengaktifkannya. Server juga menolak (`400 lokasi wajib diaktifkan`) bila lokasi tidak dikirim.
+- **Check-in**: di halaman teknisi (`/my`) ada kartu "Lokasi saya" dengan tombol **Kirim lokasi saya**. Bila izin lokasi sudah pernah diberikan, posisi terkirim otomatis setiap aplikasi dibuka (maksimal 1x per 30 menit). Kartu berwarna kuning bila hari itu belum ada kiriman.
+- Pinjam/kembali yang dicatat admin dari menu Peminjaman tidak membawa lokasi.
+
+Admin melihat semuanya di menu **Peta teknisi** (`/admin/locations`): titik besar = posisi terakhir tiap teknisi (hijau aktif, abu-abu lebih dari `LOCATION_STALE_HOURS` jam tidak update, bawaan 4), titik kecil = riwayat. Tombol "Lihat jejak" menampilkan riwayat satu teknisi. Riwayat lokasi dihapus otomatis setelah 90 hari (index TTL di koleksi `locationlogs`).
+
+Batasan: aplikasi web tidak bisa melacak di latar belakang. Lokasi hanya terkirim saat teknisi membuka web dan melakukan aksi. Pelacakan terus-menerus memerlukan aplikasi HP terpisah (mis. Traccar, open-source) dan di luar cakupan ini.
+
+Tips agar teknisi rutin membuka HP (dan lokasi ikut terkirim):
+1. **Jadikan aturan kerja**: setiap ambil/kembalikan alat wajib lewat scan QR, bukan dicatat admin. Karena scan wajib GPS, lokasi otomatis tercatat.
+2. **Check-in di awal tugas dan saat tiba di lokasi pelanggan/site** sebagai bagian SOP harian.
+3. **Pasang web ke layar utama HP** (Chrome: menu ⋮ → Tambahkan ke layar utama; Safari: Bagikan → Tambah ke Layar Utama) supaya sekali ketuk terbuka dan lokasi terkirim otomatis.
+4. **Izinkan lokasi "Selalu untuk situs ini"** sekali saja saat pertama dipakai, supaya tidak ada pop-up lagi dan check-in otomatis berjalan.
+5. **Pantau tiap hari dari Peta teknisi**: teknisi berstatus abu-abu ("Lama tidak update") diingatkan lewat grup Telegram.
+6. **Pengingat terjadwal di grup Telegram** (mis. jam 08.00 dan 13.00: "Silakan kirim lokasi") bisa dibuat dari fitur pesan terjadwal Telegram tanpa biaya.
+
+Env baru (opsional) di backend: `LOCATION_STALE_HOURS` (bawaan 4).

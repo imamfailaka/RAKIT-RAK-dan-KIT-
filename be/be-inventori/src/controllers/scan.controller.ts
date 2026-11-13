@@ -7,6 +7,8 @@ import { mongoScanStore } from "../services/scan-store";
 import { notifyLoan } from "../services/telegram-notify";
 import response from "../utils/response";
 import { env } from "../utils/env";
+import { parseLocation } from "../services/location";
+import { recordLocation } from "./location.controller";
 
 const deps: ScanDeps = {
   equipment: mongoEquipmentStore,
@@ -53,8 +55,12 @@ export default {
   },
   async borrow(req: IReqUser, res: Response) {
     try {
+      // Pinjam lewat HP wajib menyertakan GPS, supaya posisi alat di lapangan selalu tercatat.
+      const p = parseLocation(req.body);
+      if (!p.ok) return response.badRequest(res, p.message, { location: p.message });
       const r = await scanBorrow(deps, req.params.serial, caller(req));
       if (!r.ok) return fail(res, r);
+      await recordLocation(req.user!.id, "borrow", p.location, r.loan.equipment);
       await notifyLoan(r.loan.id, "borrow", "Scan QR");
       response.created(res, r.loan, "success borrow by scan");
     } catch (error) {
@@ -63,8 +69,11 @@ export default {
   },
   async return(req: IReqUser, res: Response) {
     try {
+      const p = parseLocation(req.body);
+      if (!p.ok) return response.badRequest(res, p.message, { location: p.message });
       const r = await scanReturn(deps, req.params.serial, caller(req), req.body?.returnCondition, text(req.body?.note));
       if (!r.ok) return fail(res, r);
+      await recordLocation(req.user!.id, "return", p.location, r.loan.equipment);
       await notifyLoan(r.loan.id, "return", "Scan QR");
       response.success(res, r.loan, "success return by scan");
     } catch (error) {

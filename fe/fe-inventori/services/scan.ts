@@ -2,6 +2,7 @@ import { apiFetch } from "@/lib/api";
 import { getToken } from "@/lib/auth";
 import type { Condition } from "@/services/equipment";
 import type { Loan } from "@/services/loans";
+import type { GeoPoint } from "@/lib/geolocation";
 
 export type CategoryScanItem = {
   id: string;
@@ -22,10 +23,11 @@ const unit = (serial: string) => `/scan/${encodeURIComponent(serial)}`;
 export async function getCategoryScan(categoryId: string): Promise<CategoryScan> {
   return (await apiFetch<CategoryScan>(`/scan/category/${encodeURIComponent(categoryId)}`, { token: getToken() })).data;
 }
-export async function scanBorrow(serial: string): Promise<Loan> {
-  return (await apiFetch<Loan>(`${unit(serial)}/borrow`, { method: "POST", token: getToken(), body: "{}" })).data;
+/** Pinjam lewat scan wajib menyertakan GPS HP teknisi. */
+export async function scanBorrow(serial: string, location: GeoPoint): Promise<Loan> {
+  return (await apiFetch<Loan>(`${unit(serial)}/borrow`, { method: "POST", token: getToken(), body: JSON.stringify({ location }) })).data;
 }
-export async function scanReturn(serial: string, input: { returnCondition: Condition; note?: string }): Promise<Loan> {
+export async function scanReturn(serial: string, input: { returnCondition: Condition; note?: string; location: GeoPoint }): Promise<Loan> {
   return (await apiFetch<Loan>(`${unit(serial)}/return`, { method: "POST", token: getToken(), body: JSON.stringify(input) })).data;
 }
 

@@ -13,6 +13,7 @@ import { useAsync } from "@/hooks/useAsync";
 import { normalizeError } from "@/lib/errors";
 import { CONDITION_LABEL, dateOrDash } from "@/lib/labels";
 import { categoryScanPath } from "@/lib/scan";
+import { GeoError, getCurrentLocation, type GeoPoint } from "@/lib/geolocation";
 import { homeFor } from "@/lib/redirect";
 import { conditionTone } from "@/lib/status";
 import type { Condition } from "@/services/equipment";
@@ -43,11 +44,20 @@ export default function CategoryScanView({ id }: { id: string }) {
     }
   }, [expired, id, router]);
 
-  async function run(item: CategoryScanItem, fn: () => Promise<unknown>, ok: string) {
+  async function run(item: CategoryScanItem, fn: (location: GeoPoint) => Promise<unknown>, ok: string) {
     setBusy(item.serial);
     setMsg(null);
+    let location: GeoPoint;
     try {
-      await fn();
+      // GPS wajib: tanpa lokasi, pinjam/kembali tidak dikirim ke server.
+      location = await getCurrentLocation();
+    } catch (e) {
+      setMsg({ kind: "err", text: e instanceof GeoError ? e.message : "Lokasi tidak bisa dibaca. Aktifkan GPS lalu coba lagi." });
+      setBusy(null);
+      return;
+    }
+    try {
+      await fn(location);
       setMsg({ kind: "ok", text: ok });
       setReturning(null);
     } catch (e) {
@@ -93,7 +103,7 @@ export default function CategoryScanView({ id }: { id: string }) {
                 )}
                 <div className="mt-3">
                   {it.action === "borrow" && (
-                    <Button loading={busy === it.serial} onClick={() => run(it, () => scanBorrow(it.serial), `${it.name} (${it.serial}) berhasil dipinjam atas nama Anda.`)}>Pinjam</Button>
+                    <Button loading={busy === it.serial} onClick={() => run(it, (location) => scanBorrow(it.serial, location), `${it.name} (${it.serial}) berhasil dipinjam atas nama Anda.`)}>Pinjam</Button>
                   )}
                   {it.action === "return" && returning !== it.serial && <Button variant="secondary" onClick={() => setReturning(it.serial)}>Kembalikan</Button>}
                   {it.action === "return" && returning === it.serial && (
@@ -104,7 +114,7 @@ export default function CategoryScanView({ id }: { id: string }) {
                           {(["good", "broken", "repair"] as const).map((c) => <option key={c} value={c}>{CONDITION_LABEL[c]}</option>)}
                         </select>
                       </label>
-                      <Button loading={busy === it.serial} onClick={() => run(it, () => scanReturn(it.serial, { returnCondition: condition }), `${it.name} (${it.serial}) dikembalikan.`)}>Konfirmasi kembalikan</Button>
+                      <Button loading={busy === it.serial} onClick={() => run(it, (location) => scanReturn(it.serial, { returnCondition: condition, location }), `${it.name} (${it.serial}) dikembalikan.`)}>Konfirmasi kembalikan</Button>
                     </div>
                   )}
                   {it.action === "locked" && (

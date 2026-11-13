@@ -9,4 +9,6 @@ export const env = {
   get TELEGRAM_CHAT_ID() { return process.env.TELEGRAM_CHAT_ID || ""; },
   get TELEGRAM_WEBHOOK_SECRET() { return process.env.TELEGRAM_WEBHOOK_SECRET || ""; },
   get OVERDUE_DAYS() { return Number(process.env.OVERDUE_DAYS || 7); },
+  /** Teknisi dianggap "tidak aktif" di peta bila lebih dari sekian jam tidak mengirim lokasi. */
+  get LOCATION_STALE_HOURS() { return Number(process.env.LOCATION_STALE_HOURS || 4); },
 };

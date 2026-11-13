@@ -7,6 +7,7 @@ import telegramController from "../controllers/telegram.controller";
 import scanController from "../controllers/scan.controller";
 import dashboardController from "../controllers/dashboard.controller";
 import userController from "../controllers/user.controller";
+import locationController from "../controllers/location.controller";
 import { authMiddleware } from "../middlewares/auth";
 import { requireRole } from "../middlewares/role";
 
@@ -44,6 +45,10 @@ router.get("/scan/category/:id", ...anyUser, scanController.category);
 router.get("/scan/:serial", ...anyUser, scanController.info);
 router.post("/scan/:serial/borrow", ...technician, scanController.borrow);
 router.post("/scan/:serial/return", ...technician, scanController.return);
+
+// Lokasi HP teknisi: teknisi check-in, admin melihat peta.
+router.post("/locations/checkin", ...technician, locationController.checkin);
+router.get("/locations", ...admin, locationController.list);
 
 // Bot Telegram: tanpa JWT, dijaga header rahasia Telegram.
 router.post("/telegram/webhook", telegramController.webhook);

@@ -19,8 +19,10 @@ export const swaggerDocument = {
     "/api/loans/{id}/return": { post: op("Return a unit with returnCondition (admin); 409 if already returned") },
     "/api/scan/category/{id}": { get: op("Category QR: every unit in the category, its holder, and the action allowed for the caller (read-only)") },
     "/api/scan/{serial}": { get: op("Scan QR: equipment info and the action available to the caller (read-only)") },
-    "/api/scan/{serial}/borrow": { post: op("Technician borrows the scanned equipment for themself; 409 if not available") },
-    "/api/scan/{serial}/return": { post: op("Technician returns their own scanned loan with returnCondition") },
+    "/api/scan/{serial}/borrow": { post: op("Technician borrows the scanned equipment for themself; body must include location {lat, lng, accuracy?} (400 if missing); 409 if not available") },
+    "/api/scan/{serial}/return": { post: op("Technician returns their own scanned loan with returnCondition and location {lat, lng, accuracy?} (400 if missing)") },
+    "/api/locations/checkin": { post: op("Technician sends current phone GPS: body { location: { lat, lng, accuracy? } }") },
+    "/api/locations": { get: op("Admin: latest position per technician + location history (query days=1..90, default 7)") },
     "/api/dashboard": { get: op("Dashboard (admin: all; technician: own loans)") },
   },
 };

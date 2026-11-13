@@ -1,6 +1,6 @@
 "use client";
 
-import { SquaresFour, Tag, Users, Wrench, ArrowsLeftRight, QrCode } from "@phosphor-icons/react";
+import { SquaresFour, Tag, Users, Wrench, ArrowsLeftRight, QrCode, MapTrifold } from "@phosphor-icons/react";
 import NavRail, { type NavItem } from "@/components/NavRail";
 
 const items: NavItem[] = [
@@ -9,6 +9,7 @@ const items: NavItem[] = [
   { href: "/admin/categories", label: "Kategori", icon: Tag, group: "Aset" },
   { href: "/admin/categories/qr", label: "Kode QR", icon: QrCode, group: "Aset" },
   { href: "/admin/loans", label: "Peminjaman", icon: ArrowsLeftRight, group: "Aktivitas" },
+  { href: "/admin/locations", label: "Peta teknisi", icon: MapTrifold, group: "Aktivitas" },
   { href: "/admin/users", label: "Pengguna", icon: Users, group: "Administrasi" },
 ];
 

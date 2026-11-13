@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, afterEach } from "vitest";
+import { describe, it, expect, vi, afterEach, beforeEach } from "vitest";
 import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import CategoryScanView from "@/components/CategoryScanView";
@@ -7,6 +7,21 @@ import { categoryScanPath, categoryScanUrl } from "@/lib/scan";
 const router = { replace: vi.fn(), push: vi.fn() };
 vi.mock("next/navigation", () => ({ useRouter: () => router }));
 afterEach(() => vi.restoreAllMocks());
+
+const HERE = { lat: -6.9175, lng: 107.6191, accuracy: 10 };
+/** GPS palsu: `ok` memberi koordinat Bandung, `denied` meniru izin lokasi ditolak. */
+function gps(mode: "ok" | "denied") {
+  Object.defineProperty(navigator, "geolocation", {
+    configurable: true,
+    value: {
+      getCurrentPosition: (ok: PositionCallback, fail: PositionErrorCallback) =>
+        mode === "ok"
+          ? ok({ coords: { latitude: HERE.lat, longitude: HERE.lng, accuracy: HERE.accuracy } } as GeolocationPosition)
+          : fail({ code: 1, message: "denied" } as GeolocationPositionError),
+    },
+  });
+}
+beforeEach(() => gps("ok"));
 
 const item = (over = {}) => ({ id: "E1", serial: "W33J24122969", name: "Fusion Splicer SIGNAL FIRE AI8", status: "available", condition: "good", mine: false, action: "borrow", ...over });
 const env = (data: unknown, status = 200) => new Response(JSON.stringify({ meta: { status, message: "m" }, data }), { status, headers: { "content-type": "application/json" } });
@@ -57,7 +72,17 @@ describe("halaman scan kategori", () => {
     await userEvent.click(await screen.findByRole("button", { name: "Pinjam" }));
     expect(await screen.findByRole("status")).toHaveTextContent(/berhasil dipinjam/i);
     expect(await screen.findByRole("button", { name: "Kembalikan" })).toBeInTheDocument();
-    expect(f.mock.calls.filter(([, i]) => (i as RequestInit)?.method === "POST")).toHaveLength(1);
+    const posts = f.mock.calls.filter(([, i]) => (i as RequestInit)?.method === "POST");
+    expect(posts).toHaveLength(1);
+    expect(JSON.parse((posts[0][1] as RequestInit).body as string)).toEqual({ location: HERE });
+  });
+  it("GPS ditolak: tidak mengirim pinjaman dan memberi petunjuk mengaktifkan lokasi", async () => {
+    gps("denied");
+    const f = stub({ "GET /scan/category/C1": () => scan([item()]) });
+    await page();
+    await userEvent.click(await screen.findByRole("button", { name: "Pinjam" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent(/izin lokasi ditolak/i);
+    expect(f.mock.calls.some(([, i]) => (i as RequestInit)?.method === "POST")).toBe(false);
   });
   it("peminjam memilih kondisi lalu mengembalikan", async () => {
     const f = stub({
@@ -70,7 +95,7 @@ describe("halaman scan kategori", () => {
     await userEvent.click(screen.getByRole("button", { name: /konfirmasi kembalikan/i }));
     await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent(/dikembalikan/i));
     const post = f.mock.calls.find(([, i]) => (i as RequestInit)?.method === "POST")!;
-    expect(JSON.parse((post[1] as RequestInit).body as string)).toMatchObject({ returnCondition: "repair" });
+    expect(JSON.parse((post[1] as RequestInit).body as string)).toMatchObject({ returnCondition: "repair", location: HERE });
   });
   it("kalah balapan: menampilkan pesan konflik dan memuat ulang", async () => {
     stub({
