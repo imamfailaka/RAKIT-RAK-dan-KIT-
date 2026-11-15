@@ -12,6 +12,8 @@ export function proxy(req: NextRequest) {
   const user = token && !isExpired(token) ? decodeToken(token) : null;
 
   if (path === "/") return NextResponse.redirect(new URL(homeFor(user?.role), req.url));
+  // Sudah login: jangan tampilkan form login, agar tidak terkesan "belum masuk" padahal sesi lama masih aktif.
+  if (path === "/auth/login") return user ? NextResponse.redirect(new URL(homeFor(user.role), req.url)) : NextResponse.next();
   if (!PROTECTED.some((p) => under(path, p))) return NextResponse.next();
 
   if (!user) {
@@ -25,4 +27,4 @@ export function proxy(req: NextRequest) {
   return NextResponse.next();
 }
 
-export const config = { matcher: ["/", "/admin/:path*", "/my/:path*", "/scan/:path*"] };
+export const config = { matcher: ["/", "/auth/login", "/admin/:path*", "/my/:path*", "/scan/:path*"] };

@@ -147,3 +147,24 @@ describe("halaman sedang dipinjam", () => {
     expect(await screen.findByText(/tidak ada alat yang sedang dipinjam/i)).toBeInTheDocument();
   });
 });
+
+describe("identitas akun di halaman scan", () => {
+  it("menampilkan akun yang sedang login dan tombol keluar", async () => {
+    const { setToken } = await import("@/lib/auth");
+    const { makeJwt } = await import("./helpers");
+    setToken(makeJwt({ id: "T1", role: "technician", exp: Math.floor(Date.now() / 1000) + 3600 }));
+    vi.spyOn(globalThis, "fetch").mockImplementation((url) =>
+      Promise.resolve(
+        String(url).endsWith("/auth/me")
+          ? env({ _id: "T1", name: "Tabrie", email: "t@x.co", role: "technician", isActive: true })
+          : scan([item()]),
+      ),
+    );
+    await page();
+    expect(await screen.findByText("Tabrie")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: /bukan anda\? keluar/i }));
+    expect(router.replace).toHaveBeenCalledWith("/auth/login?next=%2Fscan%2Fc%2FC1");
+    const { getToken } = await import("@/lib/auth");
+    expect(getToken()).toBeUndefined();
+  });
+});

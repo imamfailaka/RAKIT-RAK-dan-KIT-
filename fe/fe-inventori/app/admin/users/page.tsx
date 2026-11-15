@@ -51,6 +51,7 @@ export default function UsersPage() {
       toPayload={userPayload}
       create={(p) => usersAdmin.create(p)}
       update={(row, p) => usersAdmin.update(row._id, p)}
+      remove={(row) => usersAdmin.remove(row._id)}
     />
   );
 }

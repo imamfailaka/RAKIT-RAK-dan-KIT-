@@ -23,7 +23,7 @@ export async function notifyLoan(loanId: string, type: "borrow" | "return", via?
       equipment: l.equipment.name,
       serial: l.equipment.serial,
       category: l.equipment.category?.name,
-      technician: l.technician?.name ?? "-",
+      technician: l.technician?.name ?? "(akun dihapus)",
       at: type === "return" && l.returnedAt ? new Date(l.returnedAt) : new Date(l.borrowedAt),
       condition: type === "return" ? l.returnCondition : undefined,
       via,

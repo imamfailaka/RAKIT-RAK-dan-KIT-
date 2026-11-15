@@ -196,7 +196,7 @@ export function eventsFromLoans(loans: any[], limit: number): HistoryEntry[] {
   const out: HistoryEntry[] = [];
   for (const l of loans) {
     if (!l.equipment) continue;
-    const base = { equipment: l.equipment.name, serial: l.equipment.serial, category: l.equipment.category?.name, technician: l.technician?.name ?? "-" };
+    const base = { equipment: l.equipment.name, serial: l.equipment.serial, category: l.equipment.category?.name, technician: l.technician?.name ?? "(akun dihapus)" };
     out.push({ ...base, type: "borrow", at: new Date(l.borrowedAt) });
     if (l.returnedAt) out.push({ ...base, type: "return", at: new Date(l.returnedAt), condition: l.returnCondition });
   }

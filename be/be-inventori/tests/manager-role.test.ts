@@ -55,3 +55,13 @@ describe("role manager (pengawas, lihat saja)", () => {
     expect(allows(get("/locations"), "technician")).toBe(false);
   });
 });
+
+describe("hapus akun", () => {
+  it("DELETE /users/:id hanya untuk admin", () => {
+    const r = routes().find((x) => x.method === "DELETE" && x.path === "/users/:id")!;
+    expect(r).toBeTruthy();
+    expect(allows(r, "admin")).toBe(true);
+    expect(allows(r, "manager")).toBe(false);
+    expect(allows(r, "technician")).toBe(false);
+  });
+});

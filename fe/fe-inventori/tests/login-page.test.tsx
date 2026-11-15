@@ -1,5 +1,8 @@
-import { describe, it, expect, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { describe, it, expect, vi, afterEach } from "vitest";
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { getToken, setToken } from "@/lib/auth";
+import { makeJwt } from "./helpers";
 import LoginPage from "@/app/auth/login/page";
 import { BRAND } from "@/lib/brand";
 
@@ -31,4 +34,18 @@ describe("halaman login", () => {
     const { container } = render(<LoginPage />);
     expect(container.querySelector("[data-logo-mark]")).not.toBeNull();
   });
+  it("login yang gagal tidak meninggalkan sesi akun sebelumnya", async () => {
+    setToken(makeJwt({ id: "old", role: "technician", exp: Math.floor(Date.now() / 1000) + 3600 }));
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response(JSON.stringify({ meta: { status: 403, message: "account is not active" }, data: null }), { status: 403 }),
+    );
+    render(<LoginPage />);
+    await userEvent.type(screen.getByLabelText("Email"), "a@b.co");
+    await userEvent.type(screen.getByLabelText("Password"), "salah123");
+    await userEvent.click(screen.getByRole("button", { name: "Masuk" }));
+    await waitFor(() => expect(screen.getByRole("alert")).toHaveTextContent(/tidak aktif/i));
+    expect(getToken()).toBeUndefined();
+  });
 });
+
+afterEach(() => vi.restoreAllMocks());

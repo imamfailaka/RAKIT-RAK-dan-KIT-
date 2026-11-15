@@ -50,4 +50,12 @@ describe("proxy", () => {
   it("lets the login page through", () => {
     expect(proxy(req("/auth/login")).headers.get("location")).toBeNull();
   });
+  it("tidak menampilkan halaman login bila sesi masih aktif (diarahkan ke beranda perannya)", () => {
+    expect(location(proxy(req("/auth/login", tech()))).pathname).toBe("/my/scan");
+    expect(location(proxy(req("/auth/login", admin()))).pathname).toBe("/admin");
+  });
+  it("token kedaluwarsa tetap boleh membuka halaman login", () => {
+    const t = makeJwt({ id: "u1", role: "technician", exp: 100 });
+    expect(proxy(req("/auth/login", t)).headers.get("location")).toBeNull();
+  });
 });

@@ -13,7 +13,7 @@ import ReturnDialog from "@/components/ReturnDialog";
 import SessionExpired from "@/components/SessionExpired";
 import Skeleton from "@/components/Skeleton";
 import { useAsync } from "@/hooks/useAsync";
-import { CONDITION_LABEL, dateOrDash, refName } from "@/lib/labels";
+import { CONDITION_LABEL, dateOrDash, refName, technicianLabel } from "@/lib/labels";
 import { listAvailableEquipment } from "@/services/equipment";
 import { borrowEquipment, listLoans, returnLoan, type Loan } from "@/services/loans";
 import { listTechnicians } from "@/services/users";
@@ -65,7 +65,7 @@ export default function LoansPage() {
       <DataTable<Loan>
         columns={[
           { header: "Alat", render: (r) => `${refName(r.equipment)}${r.equipment?.serial ? ` (${r.equipment.serial})` : ""}` },
-          { header: "Teknisi", render: (r) => refName(r.technician) },
+          { header: "Teknisi", render: (r) => technicianLabel(r.technician) },
           { header: "Dipinjam", render: (r) => dateOrDash(r.borrowedAt) },
           { header: "Dikembalikan", render: (r) => (r.returnedAt ? `${dateOrDash(r.returnedAt)} (${CONDITION_LABEL[r.returnCondition ?? ""] ?? "-"})` : <Badge tone="warn">Belum</Badge>) },
         ]}

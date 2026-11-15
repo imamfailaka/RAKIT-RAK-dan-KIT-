@@ -18,6 +18,7 @@ import { homeFor } from "@/lib/redirect";
 import { conditionTone } from "@/lib/status";
 import type { Condition } from "@/services/equipment";
 import { getCategoryScan, scanBorrow, scanReturn, type CategoryScanItem } from "@/services/scan";
+import { getMe } from "@/services/auth";
 
 /**
  * Tujuan QR kategori: daftar unit dengan statusnya. Unit tersedia punya tombol Pinjam; unit yang dipinjam
@@ -31,6 +32,16 @@ export default function CategoryScanView({ id }: { id: string }) {
   const [msg, setMsg] = useState<{ kind: "ok" | "err"; text: string } | null>(null);
   const [returning, setReturning] = useState<string | null>(null);
   const [condition, setCondition] = useState<Condition>("good");
+  const [me, setMe] = useState<string | null>(null);
+
+  // Tampilkan akun yang sedang dipakai, supaya jelas atas nama siapa alat dipinjam.
+  useEffect(() => {
+    const token = getToken();
+    if (!token) return;
+    let alive = true;
+    getMe(token).then((u) => { if (alive) setMe(u.name); }).catch(() => {});
+    return () => { alive = false; };
+  }, []);
 
   const toLogin = () => {
     clearToken();
@@ -74,6 +85,12 @@ export default function CategoryScanView({ id }: { id: string }) {
   return (
     <main className="mx-auto flex min-h-[100dvh] w-full max-w-md flex-col gap-4 px-4 py-8">
       <div className="flex items-center gap-2 text-sm text-muted"><LogoMark size={28} /> Pindai alat</div>
+      {me && (
+        <p className="text-sm text-muted">
+          Masuk sebagai <span className="font-semibold text-ink">{me}</span>.{" "}
+          <button type="button" onClick={toLogin} className="text-accent underline">Bukan Anda? Keluar</button>
+        </p>
+      )}
       {state.status === "loading" && <Skeleton count={3} />}
       {state.status === "error" && !expired && (
         <ErrorState message={state.error.kind === "notfound" ? "Kategori tidak ditemukan." : state.error.message} onRetry={state.error.kind === "notfound" ? undefined : load} />

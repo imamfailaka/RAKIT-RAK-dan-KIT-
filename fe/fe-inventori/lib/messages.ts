@@ -11,6 +11,8 @@ const MESSAGES: Record<string, string> = {
   "technician not found or not active": "Teknisi tidak ditemukan atau tidak aktif.",
   "you cannot demote or deactivate yourself": "Anda tidak bisa menurunkan peran atau menonaktifkan akun Anda sendiri.",
   "account is not active": "Akun tidak aktif.",
+  "you cannot delete yourself": "Anda tidak bisa menghapus akun Anda sendiri.",
+  "user still has borrowed equipment": "Akun ini masih memegang alat. Kembalikan semua alatnya dulu, baru akun bisa dihapus.",
   "too many login attempts": "Terlalu banyak percobaan login. Coba lagi nanti.",
 };
 

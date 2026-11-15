@@ -91,7 +91,7 @@ export default {
         .map((d: any) => ({
           id: String(d._id),
           technicianId: String(d.technician._id),
-          technicianName: d.technician.name,
+          technicianName: d.technician.name ?? "-",
           event: d.event,
           serial: d.equipment?.serial,
           equipmentName: d.equipment?.name,

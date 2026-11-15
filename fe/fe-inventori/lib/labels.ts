@@ -3,6 +3,11 @@ export const STATUS_LABEL: Record<string, string> = { available: "Tersedia", bor
 
 type NamedRef = string | { _id?: string; name?: string } | null | undefined;
 
+/** Nama teknisi pada riwayat; null = akunnya sudah dihapus permanen. */
+export function technicianLabel(ref: NamedRef): string {
+  return ref === null ? "Akun dihapus" : refName(ref);
+}
+
 /** Category refs can be missing (deleted) or unpopulated; never show "undefined". */
 export function refName(ref: NamedRef): string {
   if (!ref || typeof ref === "string") return "-";

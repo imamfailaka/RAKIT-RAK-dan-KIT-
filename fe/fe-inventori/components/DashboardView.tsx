@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { BRAND } from "@/lib/brand";
-import { CONDITION_LABEL, dateOrDash, refName } from "@/lib/labels";
+import { CONDITION_LABEL, dateOrDash, refName, technicianLabel } from "@/lib/labels";
 import type { Tone } from "@/lib/status";
 import type { AdminDashboard } from "@/services/dashboard";
 
@@ -93,7 +93,7 @@ export default function DashboardView({ data, now }: { data: AdminDashboard; now
         <Section title={`Pinjaman terlambat (> ${data.overdueDays} hari): ${data.overdueLoansCount}`} empty="Tidak ada pinjaman terlambat." tone={data.overdueLoansCount > 0 ? "danger" : "ok"}>
           {data.overdueLoans.map((l) => (
             <li key={l._id} className="flex justify-between gap-2">
-              <span className="flex gap-1"><span>{refName(l.equipment)}</span><span aria-hidden>·</span><span>{refName(l.technician)}</span></span>
+              <span className="flex gap-1"><span>{refName(l.equipment)}</span><span aria-hidden>·</span><span>{technicianLabel(l.technician)}</span></span>
               <span className="text-muted tabular-nums">{dateOrDash(l.borrowedAt)} ({days(l.borrowedAt)} hari)</span>
             </li>
           ))}

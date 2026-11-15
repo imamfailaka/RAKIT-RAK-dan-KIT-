@@ -6,7 +6,7 @@ import Button from "@/components/Button";
 import Input from "@/components/Input";
 import { useToast } from "@/components/Toast";
 import LoginShell from "@/components/LoginShell";
-import { decodeToken, setToken } from "@/lib/auth";
+import { clearToken, decodeToken, setToken } from "@/lib/auth";
 import { safeNext } from "@/lib/redirect";
 import { normalizeError } from "@/lib/errors";
 import { login } from "@/services/auth";
@@ -22,6 +22,8 @@ function LoginForm() {
     const form = new FormData(e.currentTarget);
     setLoading(true);
     setError(undefined);
+    // Buang sesi lama dulu: bila login ini gagal, tidak ada akun sebelumnya yang tetap aktif diam-diam.
+    clearToken();
     try {
       const token = await login(String(form.get("email")), String(form.get("password")));
       setToken(token);

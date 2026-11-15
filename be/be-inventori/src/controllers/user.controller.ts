@@ -3,6 +3,7 @@ import UserModel, { userCreateDTO, userUpdateDTO } from "../models/user.model";
 import { IReqUser } from "../middlewares/auth";
 import { buildUserPayload } from "../services/payloads";
 import { hashPassword } from "../utils/password";
+import { deleteUser, mongoUserDeleteStore } from "../services/user-delete";
 import response from "../utils/response";
 
 const isDuplicate = (e: any) => e?.code === 11000;
@@ -50,6 +51,17 @@ export default {
       if (isDuplicate(error)) return response.conflict(res, "email already used", { email: "Email sudah dipakai" });
       if ((error as any)?.name === "CastError") return response.notFound(res, "user not found");
       response.error(res, error, "failed to update user");
+    }
+  },  async remove(req: IReqUser, res: Response) {
+    try {
+      const result = await deleteUser(mongoUserDeleteStore, req.user?.id, String(req.params.id));
+      if (result === "self") return response.conflict(res, "you cannot delete yourself");
+      if (result === "not_found") return response.notFound(res, "user not found");
+      if (result === "has_active_loan") return response.conflict(res, "user still has borrowed equipment");
+      response.success(res, { _id: req.params.id }, "success delete user");
+    } catch (error) {
+      if ((error as any)?.name === "CastError") return response.notFound(res, "user not found");
+      response.error(res, error, "failed to delete user");
     }
   },
 };

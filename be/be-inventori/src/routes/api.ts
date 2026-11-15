@@ -22,6 +22,8 @@ const viewer = [authMiddleware, requireRole("admin", "manager")];
 router.get("/users", ...viewer, userController.findAll);
 router.post("/users", authMiddleware, requireRole("admin"), userController.create);
 router.put("/users/:id", authMiddleware, requireRole("admin"), userController.update);
+// Hapus akun permanen (admin). Ditolak bila akun masih memegang alat atau akun sendiri.
+router.delete("/users/:id", authMiddleware, requireRole("admin"), userController.remove);
 
 const admin = [authMiddleware, requireRole("admin")];
 const anyUser = [authMiddleware];
