@@ -6,6 +6,7 @@ import { mongoLoanStore } from "../services/loan-store";
 import { mongoScanStore } from "../services/scan-store";
 import { notifyLoan } from "../services/telegram-notify";
 import response from "../utils/response";
+import { audit, conditionLabel, equipmentLabel } from "../services/audit";
 import { env } from "../utils/env";
 import { parseLocation } from "../services/location";
 import { recordLocation } from "./location.controller";
@@ -62,6 +63,7 @@ export default {
       if (!r.ok) return fail(res, r);
       await recordLocation(req.user!.id, "borrow", p.location, r.loan.equipment);
       await notifyLoan(r.loan.id, "borrow", "Scan QR");
+      await audit(req, "loan.borrow", { type: "equipment", id: String(r.loan.equipment), label: await equipmentLabel(r.loan.equipment) }, "scan QR");
       response.created(res, r.loan, "success borrow by scan");
     } catch (error) {
       response.error(res, error, "failed to borrow by scan");
@@ -75,6 +77,7 @@ export default {
       if (!r.ok) return fail(res, r);
       await recordLocation(req.user!.id, "return", p.location, r.loan.equipment);
       await notifyLoan(r.loan.id, "return", "Scan QR");
+      await audit(req, "loan.return", { type: "equipment", id: String(r.loan.equipment), label: await equipmentLabel(r.loan.equipment) }, `scan QR; kondisi: ${conditionLabel(r.loan.returnCondition)}`);
       response.success(res, r.loan, "success return by scan");
     } catch (error) {
       response.error(res, error, "failed to return by scan");

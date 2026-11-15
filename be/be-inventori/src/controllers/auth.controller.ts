@@ -7,6 +7,7 @@ import { verifyPassword } from "../utils/password";
 import { checkLock, loginKey, recordFailure, recordSuccess } from "../services/login-guard";
 import { mongoAttemptStore } from "../services/login-attempt-store";
 import response from "../utils/response";
+import { clientIp, writeAudit } from "../services/audit";
 
 const loginDTO = Yup.object({
   email: Yup.string().trim().required("Email wajib diisi"),
@@ -27,12 +28,24 @@ export default {
       if (lock.locked) return tooMany(res, lock.minutesLeft);
       const user: any = await UserModel.findOne({ email: key }).select("+password");
       if (!user || !verifyPassword(password, user.password)) {
+        await writeAudit({
+          actor: user ? { id: String(user._id), name: user.name, role: user.role } : null,
+          action: "auth.login_failed",
+          target: { type: "user", label: key },
+          detail: user ? "password salah" : "email tidak terdaftar",
+          ip: clientIp(req),
+        });
         const after = await recordFailure(mongoAttemptStore, key, new Date());
         if (after.locked) return tooMany(res, after.minutesLeft);
         return response.badRequest(res, "failed to login", { password: "Email atau password salah" });
       }
       await recordSuccess(mongoAttemptStore, key);
-      if (!user.isActive) return response.unauthorized(res, "account is not active");
+      const actor = { id: String(user._id), name: user.name, role: user.role };
+      if (!user.isActive) {
+        await writeAudit({ actor, action: "auth.login_inactive", target: { type: "user", id: actor.id, label: key }, ip: clientIp(req) });
+        return response.unauthorized(res, "account is not active");
+      }
+      await writeAudit({ actor, action: "auth.login", target: { type: "user", id: actor.id, label: key }, ip: clientIp(req) });
       const token = signToken({ id: String(user._id), role: user.role });
       response.success(res, token, "login success");
     } catch (error) {

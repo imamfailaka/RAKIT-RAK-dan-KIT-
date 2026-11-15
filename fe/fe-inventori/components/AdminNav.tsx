@@ -1,6 +1,6 @@
 "use client";
 
-import { SquaresFour, Tag, Users, Wrench, ArrowsLeftRight, QrCode, MapTrifold } from "@phosphor-icons/react";
+import { SquaresFour, Tag, Users, Wrench, ArrowsLeftRight, QrCode, MapTrifold, ClockCounterClockwise } from "@phosphor-icons/react";
 import NavRail, { type NavItem } from "@/components/NavRail";
 import { useRole } from "@/components/useSession";
 import { isManager } from "@/lib/permissions";
@@ -13,6 +13,7 @@ const items: NavItem[] = [
   { href: "/admin/loans", label: "Peminjaman", icon: ArrowsLeftRight, group: "Aktivitas" },
   { href: "/admin/locations", label: "Peta teknisi", icon: MapTrifold, group: "Aktivitas" },
   { href: "/admin/users", label: "Pengguna", icon: Users, group: "Administrasi" },
+  { href: "/admin/audit", label: "Audit", icon: ClockCounterClockwise, group: "Administrasi" },
 ];
 
 /** Manager tidak butuh cetak QR (pekerjaan admin). */

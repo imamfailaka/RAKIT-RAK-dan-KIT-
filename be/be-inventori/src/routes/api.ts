@@ -8,6 +8,7 @@ import scanController from "../controllers/scan.controller";
 import dashboardController from "../controllers/dashboard.controller";
 import userController from "../controllers/user.controller";
 import locationController from "../controllers/location.controller";
+import auditController from "../controllers/audit.controller";
 import { authMiddleware } from "../middlewares/auth";
 import { requireRole } from "../middlewares/role";
 
@@ -67,5 +68,8 @@ router.get("/telegram/setup", telegramController.setup);
 router.get("/telegram/daily", telegramController.daily);
 
 router.get("/dashboard", ...anyUser, dashboardController.get);
+
+// Audit log: hanya admin dan manager yang boleh melihat. Tidak ada rute ubah/hapus (catatan tidak bisa diedit).
+router.get("/audit", ...viewer, auditController.list);
 
 export default router;

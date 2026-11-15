@@ -65,3 +65,13 @@ describe("hapus akun", () => {
     expect(allows(r, "technician")).toBe(false);
   });
 });
+
+describe("audit log", () => {
+  it("GET /audit hanya untuk admin dan manager, tanpa rute ubah/hapus", () => {
+    const r = routes().find((x) => x.method === "GET" && x.path === "/audit")!;
+    expect(allows(r, "admin")).toBe(true);
+    expect(allows(r, "manager")).toBe(true);
+    expect(allows(r, "technician")).toBe(false);
+    expect(routes().filter((x) => x.path.startsWith("/audit") && x.method !== "GET")).toEqual([]);
+  });
+});

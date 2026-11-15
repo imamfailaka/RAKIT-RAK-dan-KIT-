@@ -5,6 +5,7 @@ import { IReqUser } from "../middlewares/auth";
 import { buildCategoryPayload } from "../services/payloads";
 import { sameNameFilter } from "../services/same-name";
 import response from "../utils/response";
+import { audit } from "../services/audit";
 
 export default {
   async findAll(req: IReqUser, res: Response) {
@@ -20,7 +21,9 @@ export default {
     try {
       const valid = await categoryDTO.validate(buildCategoryPayload(req.body), { abortEarly: false });
       if (await CategoryModel.exists(sameNameFilter(valid.name))) return response.conflict(res, "category exists", { name: "Nama kategori sudah ada" });
-      response.created(res, await CategoryModel.create(valid), "success create category");
+      const created: any = await CategoryModel.create(valid);
+      await audit(req, "category.create", { type: "category", id: String(created._id), label: created.name });
+      response.created(res, created, "success create category");
     } catch (error) {
       if ((error as any)?.code === 11000) return response.conflict(res, "category exists", { name: "Nama kategori sudah ada" });
       response.error(res, error, "failed to create category");
@@ -32,8 +35,11 @@ export default {
       if (valid.name && (await CategoryModel.exists(sameNameFilter(valid.name, String(req.params.id))))) {
         return response.conflict(res, "category exists", { name: "Nama kategori sudah ada" });
       }
-      const result = await CategoryModel.findByIdAndUpdate(req.params.id, valid, { new: true });
+      const before: any = await CategoryModel.findById(req.params.id).lean();
+      const result: any = await CategoryModel.findByIdAndUpdate(req.params.id, valid, { new: true });
       if (!result) return response.notFound(res, "category not found");
+      const renamed = before && valid.name && before.name !== result.name ? `nama: ${before.name} → ${result.name}` : "tanpa perubahan nama";
+      await audit(req, "category.update", { type: "category", id: String(result._id), label: result.name }, renamed);
       response.success(res, result, "success update category");
     } catch (error) {
       if ((error as any)?.code === 11000) return response.conflict(res, "category exists", { name: "Nama kategori sudah ada" });
@@ -45,8 +51,9 @@ export default {
     try {
       const id = req.params.id;
       if (await EquipmentModel.exists({ category: id })) return response.conflict(res, "category is still used by equipment");
-      const result = await CategoryModel.findByIdAndDelete(id);
+      const result: any = await CategoryModel.findByIdAndDelete(id);
       if (!result) return response.notFound(res, "category not found");
+      await audit(req, "category.delete", { type: "category", id: String(id), label: result.name });
       response.success(res, result, "success remove category");
     } catch (error) {
       if ((error as any)?.name === "CastError") return response.notFound(res, "category not found");

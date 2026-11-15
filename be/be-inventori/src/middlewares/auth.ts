@@ -4,10 +4,10 @@ import response from "../utils/response";
 import { mongoUserLookup } from "../services/user-lookup";
 
 export interface IReqUser extends Request {
-  user?: TokenPayload;
+  user?: TokenPayload & { name?: string };
 }
 
-export type UserLookup = (id: string) => Promise<{ role: Role; isActive: boolean } | null>;
+export type UserLookup = (id: string) => Promise<{ role: Role; isActive: boolean; name?: string } | null>;
 
 /**
  * Verifies the token, then trusts the database, not the token, for role and active state,
@@ -30,7 +30,7 @@ export const makeAuthMiddleware = (lookup: UserLookup) =>
       return response.unauthorized(res, "unauthorized");
     }
     if (!current || !current.isActive) return response.unauthorized(res, "account is not active");
-    req.user = { id: payload.id, role: current.role };
+    req.user = { id: payload.id, role: current.role, name: current.name };
     next();
   };
 

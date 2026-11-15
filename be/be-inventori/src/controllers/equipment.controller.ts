@@ -4,6 +4,16 @@ import { IReqUser } from "../middlewares/auth";
 import { buildEquipmentPayload } from "../services/payloads";
 import { escapeRegex, pageParams } from "../utils/paginate";
 import response from "../utils/response";
+import { audit, describeChanges } from "../services/audit";
+
+const COND: Record<string, string> = { good: "Baik", broken: "Rusak", repair: "Perbaikan" };
+const EQUIPMENT_FIELDS = [
+  { key: "name", label: "nama" },
+  { key: "serial", label: "serial" },
+  { key: "condition", label: "kondisi", format: (v: any) => COND[v] ?? String(v ?? "-") },
+  { key: "category", label: "kategori", format: (v: any) => String(v?._id ?? v ?? "-") },
+  { key: "note", label: "catatan" },
+];
 
 export default {
   async findAll(req: IReqUser, res: Response) {
@@ -40,7 +50,9 @@ export default {
   async create(req: IReqUser, res: Response) {
     try {
       const valid = await equipmentDTO.validate(buildEquipmentPayload(req.body), { abortEarly: false });
-      response.created(res, await EquipmentModel.create(valid), "success create equipment");
+      const item: any = await EquipmentModel.create(valid);
+      await audit(req, "equipment.create", { type: "equipment", id: String(item._id), label: `${item.name} (${item.serial})` });
+      response.created(res, item, "success create equipment");
     } catch (error) {
       if ((error as any)?.code === 11000) return response.conflict(res, "serial exists", { serial: "Serial sudah terdaftar" });
       response.error(res, error, "failed to create equipment");
@@ -49,8 +61,11 @@ export default {
   async update(req: IReqUser, res: Response) {
     try {
       const valid = await equipmentUpdateDTO.validate(buildEquipmentPayload(req.body), { abortEarly: false });
-      const result = await EquipmentModel.findByIdAndUpdate(req.params.id, valid, { new: true });
+      const before: any = await EquipmentModel.findById(req.params.id).lean();
+      if (!before) return response.notFound(res, "equipment not found");
+      const result: any = await EquipmentModel.findByIdAndUpdate(req.params.id, valid, { new: true });
       if (!result) return response.notFound(res, "equipment not found");
+      await audit(req, "equipment.update", { type: "equipment", id: String(result._id), label: `${result.name} (${result.serial})` }, describeChanges(before, valid as any, EQUIPMENT_FIELDS) || "tanpa perubahan");
       response.success(res, result, "success update equipment");
     } catch (error) {
       if ((error as any)?.code === 11000) return response.conflict(res, "serial exists", { serial: "Serial sudah terdaftar" });

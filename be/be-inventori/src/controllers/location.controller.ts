@@ -7,6 +7,7 @@ import { IReqUser } from "../middlewares/auth";
 import { latestPerTechnician, onlyHolding, parseLocation, type GeoPoint, type LocationEntry, type LocationEvent } from "../services/location";
 import { env } from "../utils/env";
 import response from "../utils/response";
+import { audit } from "../services/audit";
 
 /** Mencatat posisi HP teknisi. Gagal simpan tidak boleh membatalkan pinjam/kembali yang sudah sukses. */
 export async function recordLocation(technician: string, event: LocationEvent, location: GeoPoint, equipment?: string) {
@@ -52,6 +53,7 @@ export default {
     try {
       const deviceId = newTrackerId();
       await UserModel.updateOne({ _id: req.user!.id }, { $set: { trackerId: deviceId } });
+      await audit(req, "tracker.reset", { type: "user", id: req.user!.id, label: req.user!.name ?? "" }, "ID perangkat Traccar dibuat baru; ID lama tidak berlaku");
       response.created(res, { deviceId }, "success create tracker");
     } catch (error) {
       response.error(res, error, "failed to create tracker");

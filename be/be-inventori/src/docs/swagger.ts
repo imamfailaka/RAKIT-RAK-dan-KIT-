@@ -8,6 +8,7 @@ export const swaggerDocument = {
   paths: {
     "/api/auth/login": { post: { summary: "Login (returns JWT in data)", responses: { 200: { description: "OK" }, 400: { description: "Wrong email/password" }, 403: { description: "Inactive account" } } } },
     "/api/auth/me": { get: op("Current user") },
+    "/api/audit": { get: op("List audit logs (admin, manager)") },
     "/api/users": { get: op("List users (admin)"), post: op("Create user (admin)") },
     "/api/users/{id}": { put: op("Update user (admin)"), delete: op("Delete user permanently (admin)") },
     "/api/categories": { get: op("List categories"), post: op("Create category (admin)") },

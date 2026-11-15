@@ -8,6 +8,7 @@ import { mongoLoanStore } from "../services/loan-store";
 import { notifyLoan } from "../services/telegram-notify";
 import { pageParams } from "../utils/paginate";
 import response from "../utils/response";
+import { audit, conditionLabel, equipmentLabel, userLabel } from "../services/audit";
 
 const deps = { equipment: mongoEquipmentStore, loans: mongoLoanStore, technicians: mongoTechnicianLookup };
 const isId = (v: unknown): v is string => typeof v === "string" && mongoose.isValidObjectId(v);
@@ -50,6 +51,7 @@ export default {
       const r = await borrow(deps, { equipmentId: equipment, technicianId: technician, recordedBy: req.user!.id, note: text(note) });
       if (!r.ok) return respond(res, r);
       await notifyLoan(r.loan.id, "borrow", "dicatat admin");
+      await audit(req, "loan.borrow", { type: "equipment", id: String(r.loan.equipment), label: await equipmentLabel(r.loan.equipment) }, `dicatat admin untuk ${await userLabel(r.loan.technician)}`);
       response.created(res, r.loan, "success create loan");
     } catch (error) {
       response.error(res, error, "failed to create loan");
@@ -61,6 +63,7 @@ export default {
       const r = await returnLoan(deps, req.params.id, req.body?.returnCondition, text(req.body?.note));
       if (!r.ok) return respond(res, r);
       await notifyLoan(r.loan.id, "return", "dicatat admin");
+      await audit(req, "loan.return", { type: "equipment", id: String(r.loan.equipment), label: await equipmentLabel(r.loan.equipment) }, `dicatat admin; kondisi: ${conditionLabel(r.loan.returnCondition)}`);
       response.success(res, r.loan, "success return loan");
     } catch (error) {
       response.error(res, error, "failed to return loan");
