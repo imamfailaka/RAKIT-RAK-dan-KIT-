@@ -75,7 +75,6 @@ const body = [
   // ===== Daftar isi =====
   new Paragraph({ children: [t("Daftar Isi", { bold: true, size: 32 })], spacing: { after: 200 } }),
   new TableOfContents("Daftar Isi", { hyperlink: true, headingStyleRange: "1-2" }),
-  p("Bila daftar isi belum tampil, klik kanan di area ini lalu pilih **Update Field**.", { spacing: { before: 120 } }),
   pageBreak(),
 
   // ===== 1 =====
@@ -376,7 +375,6 @@ const doc = new Document({
       { reference: "num", levels: [{ level: 0, format: LevelFormat.DECIMAL, text: "%1.", alignment: AlignmentType.LEFT, style: { paragraph: { indent: { left: 540, hanging: 360 } } } }] },
     ],
   },
-  features: { updateFields: true },
   sections: [{
     properties: { page: { size: { width: PAGE_W, height: 16838 }, margin: { top: MARGIN, bottom: MARGIN, left: MARGIN, right: MARGIN } } },
     footers: {
